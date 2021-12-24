@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.repository.category;
+package com.example.springsecuritydemo.repository;
 
 import com.example.springsecuritydemo.models.articles.Category;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.controller.category;
+package com.example.springsecuritydemo.controller;
 
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.service.category.CategoryService;

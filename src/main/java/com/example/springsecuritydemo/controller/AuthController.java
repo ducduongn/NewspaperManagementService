@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.controller.auth;
+package com.example.springsecuritydemo.controller;
 
 import com.example.springsecuritydemo.auth.jwt.JwtUtils;
 import com.example.springsecuritydemo.auth.payload.request.LoginRequest;
@@ -10,8 +10,8 @@ import com.example.springsecuritydemo.constant.auth.UserMessage;
 import com.example.springsecuritydemo.models.auth.ERole;
 import com.example.springsecuritydemo.models.auth.Role;
 import com.example.springsecuritydemo.models.auth.User;
-import com.example.springsecuritydemo.repository.auth.RoleRepository;
-import com.example.springsecuritydemo.repository.auth.UserRepository;
+import com.example.springsecuritydemo.repository.RoleRepository;
+import com.example.springsecuritydemo.repository.UserRepository;
 import com.example.springsecuritydemo.service.auth.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

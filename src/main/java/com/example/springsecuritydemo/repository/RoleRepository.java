@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.repository.auth;
+package com.example.springsecuritydemo.repository;
 
 import com.example.springsecuritydemo.models.auth.ERole;
 import com.example.springsecuritydemo.models.auth.Role;

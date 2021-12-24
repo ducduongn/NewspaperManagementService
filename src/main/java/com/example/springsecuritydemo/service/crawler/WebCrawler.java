@@ -3,8 +3,8 @@ package com.example.springsecuritydemo.service.crawler;
 import com.example.springsecuritydemo.constant.cralwer.URLConstant;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
-import com.example.springsecuritydemo.repository.article.ArticleRepository;
-import com.example.springsecuritydemo.repository.category.CategoryRepository;
+import com.example.springsecuritydemo.repository.ArticleRepository;
+import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class WebCrawler {
         this.categoryRepository = categoryRepository;
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void crawlCategories() {
         try {
             File file = new File(URLConstant.htmlPath);
@@ -70,7 +69,7 @@ public class WebCrawler {
         }
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void crawlAllArticlesFromALlCategories() {
         List<Category> categoryList = categoryRepository.findAll();
 

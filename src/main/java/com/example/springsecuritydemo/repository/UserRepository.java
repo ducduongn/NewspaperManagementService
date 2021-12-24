@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.repository.auth;
+package com.example.springsecuritydemo.repository;
 
 import com.example.springsecuritydemo.models.auth.User;
 import org.springframework.data.jpa.repository.JpaRepository;

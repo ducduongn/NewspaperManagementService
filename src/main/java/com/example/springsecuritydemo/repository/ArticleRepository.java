@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.repository.article;
+package com.example.springsecuritydemo.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +16,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findAll();
 
     Optional<Article> findById(Long aLong);
+
+    Optional<Article> findByUrl(String url);
 
     Boolean existsByTitle(String title);
 }
