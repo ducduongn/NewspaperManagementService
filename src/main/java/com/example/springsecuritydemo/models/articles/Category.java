@@ -1,19 +1,18 @@
 package com.example.springsecuritydemo.models.articles;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 /**
  * @author ducduongn
  */
+@Data
 @Entity
-@Table(name = "category")
-@Getter
-@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.controller;
+package com.example.springsecuritydemo.controller.auth;
 
 import com.example.springsecuritydemo.auth.jwt.JwtUtils;
 import com.example.springsecuritydemo.auth.payload.request.LoginRequest;

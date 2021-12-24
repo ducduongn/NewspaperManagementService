@@ -1,16 +1,16 @@
 package com.example.springsecuritydemo.models.articles;
 
 import com.example.springsecuritydemo.models.auth.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "comment")
 public class Comment {

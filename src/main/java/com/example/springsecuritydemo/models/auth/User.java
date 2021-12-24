@@ -1,16 +1,15 @@
 package com.example.springsecuritydemo.models.auth;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Comment;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
-
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "user")
 public class User {
@@ -44,10 +43,6 @@ public class User {
         this.username = userName;
         this.email = email;
         this.password = password;
-    }
-
-    public User() {
-
     }
 
 }

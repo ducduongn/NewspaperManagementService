@@ -1,13 +1,13 @@
 package com.example.springsecuritydemo.models.auth;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -22,10 +22,5 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
     private Set<User> users;
-
-
-    public Role() {
-
-    }
 
 }
