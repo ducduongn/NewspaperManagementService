@@ -34,9 +34,6 @@ public class User {
     )
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    Set<Article> articles;
-
     public User(String userName,
                 String email,
                 String password) {

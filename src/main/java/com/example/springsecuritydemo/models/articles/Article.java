@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.util.Date;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -25,8 +26,22 @@ public class Article {
     @Column(name = "updated_date")
     private Date updatedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_article_author"))
-    private User author;
+    @Column(name = "author")
+    private String author;
+
+    @Column(name="url")
+    private String url;
+
+    @Column(name = "title", unique = true)
+    private String title;
+
+    @Column(name = "content",
+            length = 65535,
+            columnDefinition = "text")
+    private String content;
+
+    @Column(name = "description",
+            length = 65535,
+            columnDefinition = "text")
+    private String description;
 }

@@ -36,5 +36,4 @@ public class Comment {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date editedDate;
 
-
 }
