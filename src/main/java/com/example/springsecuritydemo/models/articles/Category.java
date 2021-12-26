@@ -1,8 +1,10 @@
 package com.example.springsecuritydemo.models.articles;
 
+import com.example.springsecuritydemo.models.auth.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author ducduongn
@@ -23,4 +25,7 @@ public class Category {
 
     @Column(name = "url")
     private String url;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
+    private Set<Article> articles;
 }

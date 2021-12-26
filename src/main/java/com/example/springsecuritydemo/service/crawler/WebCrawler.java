@@ -43,6 +43,11 @@ public class WebCrawler {
     }
 
     @PostConstruct
+    public void crawData() {
+        crawlCategories();
+        crawlAllArticlesFromALlCategories();
+    }
+
     public void crawlCategories() {
         try {
             File file = new File(URLConstant.htmlPath);
@@ -69,7 +74,6 @@ public class WebCrawler {
         }
     }
 
-    @PostConstruct
     public void crawlAllArticlesFromALlCategories() {
         List<Category> categoryList = categoryRepository.findAll();
 
@@ -115,9 +119,9 @@ public class WebCrawler {
                 int currentPageNum = Integer.parseInt(currentPageBtn.text());
 
                 if (currentPageNum < pageNum) {
+                    log.info(currentPageNum + ": " + url);
                     String nextPageUrl = nextBtn.attr("abs:href");
                     crawlArticle(nextPageUrl, pageNum);
-                    log.info(pageNum + ": " + url);
                 }
             }
 
