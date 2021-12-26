@@ -118,7 +118,7 @@ public class WebCrawler {
             if (currentPageBtn != null && nextBtn != null) {
                 int currentPageNum = Integer.parseInt(currentPageBtn.text());
 
-                if (currentPageNum < pageNum) {
+                if (currentPageNum <= pageNum) {
                     log.info(currentPageNum + ": " + url);
                     String nextPageUrl = nextBtn.attr("abs:href");
                     crawlArticle(nextPageUrl, pageNum);
