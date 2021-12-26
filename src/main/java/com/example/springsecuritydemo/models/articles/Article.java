@@ -26,7 +26,9 @@ public class Article {
     @Column(name = "updated_date")
     private Date updatedDate;
 
-    @Column(name = "author")
+    @Column(name = "author",
+            length = 65535,
+            columnDefinition = "text")
     private String author;
 
     @Column(name="url")

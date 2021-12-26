@@ -42,7 +42,7 @@ public class WebCrawler {
         this.categoryRepository = categoryRepository;
     }
 
-//    @PostConstruct
+    @PostConstruct
     public void crawlCategories() {
         try {
             File file = new File(URLConstant.htmlPath);
@@ -69,7 +69,7 @@ public class WebCrawler {
         }
     }
 
-//    @PostConstruct
+    @PostConstruct
     public void crawlAllArticlesFromALlCategories() {
         List<Category> categoryList = categoryRepository.findAll();
 
@@ -88,24 +88,22 @@ public class WebCrawler {
                 Article article = new Article();
 
                 Element titleNews = tag.selectFirst(".title-news > a");
-                Element description = tag.selectFirst(".description > a");
 
-                if (titleNews != null && description != null) {
+                if (titleNews != null) {
                     article.setUrl(titleNews.attr("abs:href"));
                     article.setTitle(titleNews.text());
-                    article.setDescription(description.text());
                 } else {
                     continue;
                 }
 
                 if (article.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
                     CrawlerUtils.getArticleContent(article);
-                }
 
-                log.info(article.toString());
+                    log.info(article.toString());
 
-                if (!articleRepository.existsByTitle(article.getTitle())) {
-                    articleRepository.save(article);
+                    if (!articleRepository.existsByUrl(article.getUrl())) {
+                        articleRepository.save(article);
+                    }
                 }
             }
         } catch (IOException e) {

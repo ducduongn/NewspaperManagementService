@@ -20,4 +20,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Optional<Article> findByUrl(String url);
 
     Boolean existsByTitle(String title);
+
+    Boolean existsByUrl(String url);
 }

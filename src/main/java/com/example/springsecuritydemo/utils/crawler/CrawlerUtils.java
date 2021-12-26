@@ -20,19 +20,37 @@ public class CrawlerUtils {
 
             StringBuilder articleContent = new StringBuilder();
 
-            Elements contentParagraphs = document.select("article > p");
+            Element articleElement = document.select("article.fck_detail").first();
 
-            for (Element paragraph: contentParagraphs) {
-                if (paragraph.hasText()) {
-                    articleContent.append(paragraph.text());
+            Elements contentParagraphs = document.select("article p");
+
+            Element descriptionEle = document.select(".description").first();
+
+            if (descriptionEle != null) {
+                article.setDescription(descriptionEle.ownText());
+            }
+
+            for (int i = 0; i < contentParagraphs.size(); i++) {
+                if (contentParagraphs.get(i).hasText()) {
+                    articleContent.append(contentParagraphs.get(i).text());
                     articleContent.append("\n");
+                }
+                if (i == contentParagraphs.size() - 1) {
+                    if (contentParagraphs.get(i).hasText()) {
+                        article.setAuthor(contentParagraphs.get(i).text());
+                    } else {
+                        article.setAuthor(contentParagraphs.get(i-1).text());
+                    }
                 }
             }
 
             article.setContent(articleContent.toString());
 
+
         } catch (IOException e) {
             log.error("Error connecting to url!");
+        } catch (NullPointerException e) {
+            log.error("Author is null!");
         }
     }
 }
