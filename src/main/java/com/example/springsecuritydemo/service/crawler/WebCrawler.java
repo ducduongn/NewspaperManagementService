@@ -74,11 +74,11 @@ public class WebCrawler {
         List<Category> categoryList = categoryRepository.findAll();
 
         for(Category category : categoryList) {
-            crawlArticle(category.getUrl());
+            crawlArticle(category.getUrl(), 6);
         }
     }
 
-    public void crawlArticle(String url) {
+    public void crawlArticle(String url, int pageNum) {
         try {
             Document document = Jsoup.connect(url).get();
 
@@ -99,13 +99,28 @@ public class WebCrawler {
                 if (article.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
                     CrawlerUtils.getArticleContent(article);
 
-                    log.info(article.toString());
+//                    log.info(article.toString());
 
                     if (!articleRepository.existsByUrl(article.getUrl())) {
                         articleRepository.save(article);
                     }
                 }
             }
+
+            Element currentPageBtn = document
+                    .select("#pagination .btn-page.active").first();
+            Element nextBtn = document
+                    .select("#pagination .btn-page.next-page ").first();
+            if (currentPageBtn != null && nextBtn != null) {
+                int currentPageNum = Integer.parseInt(currentPageBtn.text());
+
+                if (currentPageNum < pageNum) {
+                    String nextPageUrl = nextBtn.attr("abs:href");
+                    crawlArticle(nextPageUrl, pageNum);
+                    log.info(pageNum + ": " + url);
+                }
+            }
+
         } catch (IOException e) {
             log.error("IO  exception!");
         }
