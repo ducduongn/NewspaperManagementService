@@ -38,10 +38,10 @@ public class Article {
             columnDefinition = "text")
     private String author;
 
-    @Column(name="url")
+    @Column(name="url", unique = true)
     private String url;
 
-    @Column(name = "title", unique = true)
+    @Column(name = "title")
     private String title;
 
     @Column(name = "content",

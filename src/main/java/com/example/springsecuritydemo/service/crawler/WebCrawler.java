@@ -21,14 +21,10 @@ import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author ducduongn
@@ -169,7 +165,7 @@ public class WebCrawler {
 
 //                    log.info("Date: " + dateTimeString);
 
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm:ss");
 
                 LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, dateTimeFormatter);
 
@@ -217,6 +213,10 @@ public class WebCrawler {
             log.error("Error connecting to url!");
         } catch (NullPointerException e) {
             log.error("Null pointer!");
+        } catch (DateTimeParseException e) {
+            log.error("Error parsing DateTime!");
+        } catch (IllegalArgumentException e) {
+            log.error("Malformed URL!");
         }
     }
 
