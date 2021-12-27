@@ -1,6 +1,7 @@
 package com.example.springsecuritydemo.models.articles;
 
 import com.example.springsecuritydemo.models.auth.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +15,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "article")
 public class Article {

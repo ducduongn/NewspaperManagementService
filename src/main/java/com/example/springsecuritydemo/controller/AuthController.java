@@ -76,14 +76,14 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         if (requestRoles == null) {
-            Role role = roleRepository.findByRoleName(ERole.READER)
+            Role role = roleRepository.findByRoleName(ERole.JOURNALIST)
                     .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
             roles.add(role);
         } else {
             requestRoles.forEach(roleName -> {
                 switch (roleName) {
                     case "journalist":
-                        Role journalistRole = roleRepository.findByRoleName(ERole.JOURNALIST)
+                        Role journalistRole = roleRepository.findByRoleName(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(journalistRole);
                         break;
@@ -98,7 +98,7 @@ public class AuthController {
                         roles.add(directorRole);
                         break;
                     default:
-                        Role readerRole = roleRepository.findByRoleName(ERole.READER)
+                        Role readerRole = roleRepository.findByRoleName(ERole.JOURNALIST)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(readerRole);
                         break;

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.service.crawler;
+package com.example.springsecuritydemo.scheduler.crawler;
 
 import com.example.springsecuritydemo.constant.cralwer.URLConstant;
 import com.example.springsecuritydemo.models.articles.Article;
@@ -13,10 +13,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.File;
@@ -35,6 +35,9 @@ import java.util.List;
 @NoArgsConstructor
 @Service
 public class WebCrawler {
+    @Value("${app.crawler.page-num-to-crawl}")
+    private int pageNumToCrawl;
+
     private CategoryRepository categoryRepository;
 
     private ArticleRepository articleRepository;
@@ -88,7 +91,7 @@ public class WebCrawler {
         List<Category> categoryList = categoryRepository.findAll();
 
         for(Category category : categoryList) {
-            crawlArticle(category.getUrl(), 6);
+            crawlArticle(category.getUrl(), pageNumToCrawl);
         }
     }
 
