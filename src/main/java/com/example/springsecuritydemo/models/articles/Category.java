@@ -4,6 +4,7 @@ import com.example.springsecuritydemo.models.auth.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,9 +24,9 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "url")
+    @Column(name = "url", unique = true)
     private String url;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
-    private Set<Article> articles;
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "categories")
+    private List<Article> articles;
 }

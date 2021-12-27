@@ -5,7 +5,10 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -21,11 +24,14 @@ public class Article {
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "posted_date")
-    private Date postedDate;
+    private LocalDateTime postedDate;
+
+    @Column(name = "string_posted_date")
+    private String stringPostedDate;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "updated_date")
-    private Date updatedDate;
+    private LocalDateTime updatedDate;
 
     @Column(name = "author",
             length = 65535,
@@ -48,11 +54,11 @@ public class Article {
             columnDefinition = "text")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "article_category",
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<Category> categories;
+    private List<Category> categories;
 }
