@@ -41,7 +41,6 @@ public class AccessController {
     @GetMapping("/user-management")
     @PreAuthorize("hasRole('ADMIN')")
     public String manageUser() {
-        return "Admin manange user here!";
+        return "Admin manage user here!";
     }
-
 }

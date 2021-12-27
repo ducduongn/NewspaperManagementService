@@ -1,8 +1,8 @@
 package com.example.springsecuritydemo.models.auth;
 
 public enum ERole {
-    DIRECTOR,
-    EDITOR,
-    JOURNALIST,
-    ADMIN,
+    ROLE_DIRECTOR,
+    ROLE_EDITOR,
+    ROLE_JOURNALIST,
+    ROLE_ADMIN,
 }

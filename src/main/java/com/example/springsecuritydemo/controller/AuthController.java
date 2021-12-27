@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -76,29 +77,29 @@ public class AuthController {
         Set<Role> roles = new HashSet<>();
 
         if (requestRoles == null) {
-            Role role = roleRepository.findByRoleName(ERole.JOURNALIST)
+            Role role = roleRepository.findByRoleName(ERole.ROLE_JOURNALIST)
                     .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
             roles.add(role);
         } else {
             requestRoles.forEach(roleName -> {
                 switch (roleName) {
-                    case "journalist":
-                        Role journalistRole = roleRepository.findByRoleName(ERole.ADMIN)
+                    case "admin":
+                        Role journalistRole = roleRepository.findByRoleName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(journalistRole);
                         break;
                     case "editor":
-                        Role editorRole = roleRepository.findByRoleName(ERole.EDITOR)
+                        Role editorRole = roleRepository.findByRoleName(ERole.ROLE_EDITOR)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(editorRole);
                         break;
                     case "director":
-                        Role directorRole = roleRepository.findByRoleName(ERole.DIRECTOR)
+                        Role directorRole = roleRepository.findByRoleName(ERole.ROLE_DIRECTOR)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(directorRole);
                         break;
                     default:
-                        Role readerRole = roleRepository.findByRoleName(ERole.JOURNALIST)
+                        Role readerRole = roleRepository.findByRoleName(ERole.ROLE_JOURNALIST)
                                 .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
                         roles.add(readerRole);
                         break;
@@ -127,7 +128,7 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(role -> role.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new JwtResponse(
