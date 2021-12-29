@@ -91,7 +91,10 @@ public class WebCrawler {
         List<Category> categoryList = categoryRepository.findAll();
 
         for(Category category : categoryList) {
-            crawlArticle(category.getUrl(), pageNumToCrawl);
+            if (!category.getUrl().contains("video") &&
+                !category.getUrl().contains("podcast")) {
+                crawlArticle(category.getUrl(), pageNumToCrawl);
+            }
         }
     }
 

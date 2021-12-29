@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = "com.example.springsecuritydemo.repository")
-@EnableElasticsearchRepositories(basePackages = "com.example.springsecuritydemo.es")
 @ComponentScan(basePackages = "com.example.springsecuritydemo")
 public class JpaConfig {
 }

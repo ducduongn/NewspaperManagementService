@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.es;
+package com.example.springsecuritydemo.es.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
