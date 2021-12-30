@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public final class Constants {
-    public static final Integer INTERVAL_IN_MILLISECOND = 180_000;
+    public static final Integer INTERVAL_IN_MILLISECOND = 86400000;
     public static final String POSTED_DATE = "postedDate";
+    public static final Long DAYS_INTERVAL = 7L;
+    public static final Long WEEK_INTERVAL = 3L;
+    public static final Long MONTH_INTERVAL = 1L;
 
     public static final String SEARCH_QUERY = "/query";
     public static final String QUERY = "query";

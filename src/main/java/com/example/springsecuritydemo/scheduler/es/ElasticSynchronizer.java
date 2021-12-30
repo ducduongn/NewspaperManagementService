@@ -18,7 +18,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.springframework.data.elasticsearch.annotations.DateFormat.date;
 
 /**
  * @author ducduongn
@@ -51,16 +54,14 @@ public class ElasticSynchronizer {
     }
 
     public void syncArticle() {
-        Specification<Article> articleSpecification = (
-                (root, criteriaQuery, criteriaBuilder) -> getCreatedDatePredicate(criteriaBuilder, root));
         List<Article> articleList;
         if (esArticleRepository.count() == 0) {
             articleList = articleRepository.findAll();
         } else {
-            articleList = articleRepository.findAll(articleSpecification);
+            articleList = articleRepository.findAll(postedDateAfter(LocalDateTime.now()));
         }
         for(Article article: articleList) {
-            log.info("Syncing article - {}", article.getId());
+            log.info("Syncing article - {}", article.getStringPostedDate());
             esArticleRepository.save(this.modelMapper.map(article, ArticleEsModel.class));
         }
 
@@ -76,5 +77,11 @@ public class ElasticSynchronizer {
                 currentTimeMinus,
                 currentTime
         );
+    }
+    public Specification<Article> postedDateAfter(LocalDateTime postedDate) {
+        return ((root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.between(root.get(Constants.POSTED_DATE),
+                        postedDate.minusWeeks(Constants.MONTH_INTERVAL),
+                        postedDate));
     }
 }
