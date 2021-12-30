@@ -1,24 +1,25 @@
 package com.example.springsecuritydemo.models.articles;
 
-import com.example.springsecuritydemo.models.auth.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-@Builder
-@AllArgsConstructor
+import java.util.List;
+
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
-@Table(name = "article")
+@Table( name = "article",
+        indexes = {
+                @Index(name = "url_index", columnList = "url"),
+        }
+)
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,4 +64,5 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
 }
