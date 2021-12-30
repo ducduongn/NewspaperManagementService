@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.service.category;
+package com.example.springsecuritydemo.service;
 
 import com.example.springsecuritydemo.models.articles.Category;
 import org.springframework.stereotype.Service;

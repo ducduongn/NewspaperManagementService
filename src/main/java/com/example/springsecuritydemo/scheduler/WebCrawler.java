@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.scheduler.crawler;
+package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.cralwer.URLConstant;
 import com.example.springsecuritydemo.models.articles.Article;
@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,22 +36,11 @@ public class WebCrawler {
     @Value("${app.crawler.page-num-to-crawl}")
     private int pageNumToCrawl;
 
+    @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
     private ArticleRepository articleRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    public void setArticleRepository(ArticleRepository articleRepository) {
-        this.articleRepository = articleRepository;
-    }
-
-    @Autowired
-    public void setCategoryRepository(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     @Scheduled(cron = "${interval-in-cron-article}")
     public void crawData() {
@@ -71,8 +58,6 @@ public class WebCrawler {
             menuElement.forEach(e -> {
                 String title = e.attr("title");
                 String url = e.attr("abs:href");
-
-//                log.info(title + ": " + url);
 
                 if (!url.contains("javascript") &&
                         !categoryRepository.existsCategoryByName(title)) {
@@ -124,25 +109,28 @@ public class WebCrawler {
                         articleRepository.save(article);
                     }
                 }
-            }
-
-            //Crawl other pages of the category
-            Element currentPageBtn = document
-                    .select("#pagination .btn-page.active").first();
-            Element nextBtn = document
-                    .select("#pagination .btn-page.next-page ").first();
-            if (currentPageBtn != null && nextBtn != null) {
-                int currentPageNum = Integer.parseInt(currentPageBtn.text());
-
-                if (currentPageNum <= pageNum) {
-                    log.info(currentPageNum + ": " + url);
-                    String nextPageUrl = nextBtn.attr("abs:href");
-                    crawlArticle(nextPageUrl, pageNum);
-                }
+                crawlOtherPage(document, url, pageNum);
             }
 
         } catch (IOException e) {
             log.error("IO  exception!");
+        }
+    }
+
+    public void crawlOtherPage(Document document, String currentUrl, int pageNum) {
+        //Crawl other pages of the category
+        Element currentPageBtn = document
+                .select("#pagination .btn-page.active").first();
+        Element nextBtn = document
+                .select("#pagination .btn-page.next-page ").first();
+        if (currentPageBtn != null && nextBtn != null) {
+            int currentPageNum = Integer.parseInt(currentPageBtn.text());
+
+            if (currentPageNum <= pageNum) {
+                log.info(currentPageNum + ": " + currentUrl);
+                String nextPageUrl = nextBtn.attr("abs:href");
+                crawlArticle(nextPageUrl, pageNum);
+            }
         }
     }
 
@@ -170,13 +158,9 @@ public class WebCrawler {
 
                 String dateTimeString = CrawlerUtils.extractDateTieFromElement(timeTagEle);
 
-//                    log.info("Date: " + dateTimeString);
-
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm:ss");
 
                 LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, dateTimeFormatter);
-
-//                    log.info("DateTime: " + dateTime);
 
                 article.setPostedDate(dateTime);
             }
@@ -225,10 +209,5 @@ public class WebCrawler {
         } catch (IllegalArgumentException e) {
             log.error("Malformed URL!");
         }
-    }
-
-
-    public static void main(String[] args) {
-//        crawlArticle("https://vnexpress.net/thoi-su");
     }
 }

@@ -1,7 +1,7 @@
 package com.example.springsecuritydemo.controller;
 
 import com.example.springsecuritydemo.models.articles.Article;
-import com.example.springsecuritydemo.service.article.ArticleService;
+import com.example.springsecuritydemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

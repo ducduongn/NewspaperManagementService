@@ -1,17 +1,9 @@
 package com.example.springsecuritydemo.utils.crawler;
 
-import com.example.springsecuritydemo.models.articles.Article;
-import com.example.springsecuritydemo.repository.CategoryRepository;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,16 +11,7 @@ import java.util.List;
  * @author ducduongn
  */
 @Slf4j
-@Service
-@NoArgsConstructor
 public class CrawlerUtils {
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    public CrawlerUtils(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
-
 
     public static List<String> getCategoryUrlListFromElement(Elements categoryElements) {
         List<String> urlList = new ArrayList<>();

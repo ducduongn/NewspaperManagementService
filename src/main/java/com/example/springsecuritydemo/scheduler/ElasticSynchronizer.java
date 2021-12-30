@@ -1,7 +1,7 @@
-package com.example.springsecuritydemo.scheduler.es;
+package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.Constants;
-import com.example.springsecuritydemo.es.model.ArticleEsModel;
+import com.example.springsecuritydemo.models.es.ArticleEsModel;
 import com.example.springsecuritydemo.es.repository.EsArticleRepository;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.repository.ArticleRepository;
@@ -20,8 +20,6 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.springframework.data.elasticsearch.annotations.DateFormat.date;
 
 /**
  * @author ducduongn
@@ -78,6 +76,7 @@ public class ElasticSynchronizer {
                 currentTime
         );
     }
+    // criteria for filter article with postedDate 1 month before present
     public Specification<Article> postedDateAfter(LocalDateTime postedDate) {
         return ((root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.between(root.get(Constants.POSTED_DATE),

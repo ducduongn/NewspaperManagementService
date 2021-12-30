@@ -64,5 +64,4 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
-
 }

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.scheduler.es;
+package com.example.springsecuritydemo.models.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

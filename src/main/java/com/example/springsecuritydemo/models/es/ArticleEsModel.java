@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.es.model;
+package com.example.springsecuritydemo.models.es;
 
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 /**
  * @author ducduongn
  */
-@Document(indexName = "article")
+@Document(indexName = "es_article")
 public class ArticleEsModel {
     @Id
     private Long id;

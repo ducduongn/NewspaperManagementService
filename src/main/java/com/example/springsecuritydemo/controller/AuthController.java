@@ -12,7 +12,7 @@ import com.example.springsecuritydemo.models.auth.Role;
 import com.example.springsecuritydemo.models.auth.User;
 import com.example.springsecuritydemo.repository.RoleRepository;
 import com.example.springsecuritydemo.repository.UserRepository;
-import com.example.springsecuritydemo.service.auth.UserDetailsImpl;
+import com.example.springsecuritydemo.service.impl.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.service.auth;
+package com.example.springsecuritydemo.service.impl;
 
 import com.example.springsecuritydemo.models.auth.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

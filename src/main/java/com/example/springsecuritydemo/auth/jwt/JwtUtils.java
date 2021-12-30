@@ -1,6 +1,6 @@
 package com.example.springsecuritydemo.auth.jwt;
 
-import com.example.springsecuritydemo.service.auth.UserDetailsImpl;
+import com.example.springsecuritydemo.service.impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

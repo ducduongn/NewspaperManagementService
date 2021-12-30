@@ -2,7 +2,7 @@ package com.example.springsecuritydemo.config;
 
 import com.example.springsecuritydemo.auth.jwt.AuthEntryPointJwt;
 import com.example.springsecuritydemo.auth.jwt.AuthTokenFilter;
-import com.example.springsecuritydemo.service.auth.UserDetailsServiceImpl;
+import com.example.springsecuritydemo.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/category/**").permitAll()
                 .antMatchers("/api/v1/article/**").permitAll()
                 .antMatchers("/api/v1/access/**").permitAll()
+                .antMatchers("/api/v1/search/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

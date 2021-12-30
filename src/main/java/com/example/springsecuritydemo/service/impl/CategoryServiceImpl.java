@@ -1,8 +1,8 @@
-package com.example.springsecuritydemo.service.category.impl;
+package com.example.springsecuritydemo.service.impl;
 
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.repository.CategoryRepository;
-import com.example.springsecuritydemo.service.category.CategoryService;
+import com.example.springsecuritydemo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
