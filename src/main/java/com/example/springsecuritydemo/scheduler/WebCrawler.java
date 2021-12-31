@@ -1,6 +1,6 @@
 package com.example.springsecuritydemo.scheduler;
 
-import com.example.springsecuritydemo.constant.cralwer.URLConstant;
+import com.example.springsecuritydemo.constant.crawler.URLConstant;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.repository.ArticleRepository;

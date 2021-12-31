@@ -28,6 +28,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class ElasticSynchronizer {
+
+    private final Long interval = Constants.MONTH_INTERVAL;
+
     private final ArticleRepository articleRepository;
 
     private final EsArticleRepository esArticleRepository;
@@ -76,11 +79,12 @@ public class ElasticSynchronizer {
                 currentTime
         );
     }
+
     // criteria for filter article with postedDate 1 month before present
     public Specification<Article> postedDateAfter(LocalDateTime postedDate) {
         return ((root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.between(root.get(Constants.POSTED_DATE),
-                        postedDate.minusWeeks(Constants.MONTH_INTERVAL),
+                        postedDate.minusWeeks(interval),
                         postedDate));
     }
 }

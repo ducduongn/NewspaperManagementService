@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.constant.cralwer;
+package com.example.springsecuritydemo.constant.crawler;
 
 /**
  * @author ducduongn
