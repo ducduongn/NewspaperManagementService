@@ -1,9 +1,10 @@
 package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.crawler.URLConstant;
+import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
-import com.example.springsecuritydemo.repository.ArticleRepository;
+import com.example.springsecuritydemo.models.dto.ArticleDto;
 import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +38,11 @@ public class WebCrawler {
     @Autowired
     private CategoryRepository categoryRepository;
 
+//    @Autowired
+//    private ArticleRepository articleRepository;
+
     @Autowired
-    private ArticleRepository articleRepository;
+    private MQSender mqSender;
 
     @Scheduled(cron = "${interval-in-cron-article}")
     public void crawData() {
@@ -92,22 +94,21 @@ public class WebCrawler {
             //Crawl all articles of one page of a category
             for (Element tag : articlesHtmlTags) {
                 Article article = new Article();
+                ArticleDto articleDto = new ArticleDto();
 
                 Element titleNews = tag.selectFirst(".title-news > a");
 
                 if (titleNews != null) {
-                    article.setUrl(titleNews.attr("abs:href"));
-                    article.setTitle(titleNews.text());
+                    articleDto.setUrl(titleNews.attr("abs:href"));
+                    articleDto.setTitle(titleNews.text());
                 } else {
                     continue;
                 }
 
-                if (article.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
-                    getArticleContent(article);
+                if (articleDto.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
+                    getArticleContent(articleDto);
 
-                    if (!articleRepository.existsByUrl(article.getUrl())) {
-                        articleRepository.save(article);
-                    }
+                    mqSender.send(articleDto);
                 }
                 crawlOtherPage(document, url, pageNum);
             }
@@ -134,9 +135,9 @@ public class WebCrawler {
         }
     }
 
-    public void getArticleContent(Article article) {
+    public void getArticleContent(ArticleDto articleDto) {
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(articleDto.getUrl()).get();
 
             StringBuilder articleContent = new StringBuilder();
 
@@ -150,19 +151,11 @@ public class WebCrawler {
 
             //Set description for crawled article
             if (descriptionEle != null) {
-                article.setDescription(descriptionEle.ownText());
+                articleDto.setDescription(descriptionEle.ownText());
             }
 
             if (timeTagEle != null && timeTagEle.text().contains("GMT+7")) {
-                article.setStringPostedDate(timeTagEle.text().trim());
-
-                String dateTimeString = CrawlerUtils.extractDateTieFromElement(timeTagEle);
-
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("d-M-yyyy HH:mm:ss");
-
-                LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, dateTimeFormatter);
-
-                article.setPostedDate(dateTime);
+                articleDto.setStringPostedDate(timeTagEle.text().trim());
             }
 
             //set content for crawled articles
@@ -173,13 +166,13 @@ public class WebCrawler {
                 }
                 if (i == contentParagraphs.size() - 1) {
                     if (contentParagraphs.get(i).hasText()) {
-                        article.setAuthor(contentParagraphs.get(i).text());
+                        articleDto.setAuthor(contentParagraphs.get(i).text());
                     } else {
-                        article.setAuthor(contentParagraphs.get(i-1).text());
+                        articleDto.setAuthor(contentParagraphs.get(i-1).text());
                     }
                 }
             }
-            article.setContent(articleContent.toString());
+            articleDto.setContent(articleContent.toString());
 
             //Mapping categories
             List<String> urlCategoryList = CrawlerUtils.getCategoryUrlListFromElement(categoryElements);
@@ -198,7 +191,7 @@ public class WebCrawler {
                     categories.add(category);
                 }
             }
-            article.setCategories(categories);
+            articleDto.setCategories(categories);
 
         } catch (IOException e) {
             log.error("Error connecting to url!");

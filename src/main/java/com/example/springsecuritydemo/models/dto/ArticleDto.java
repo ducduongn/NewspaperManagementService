@@ -1,10 +1,10 @@
 package com.example.springsecuritydemo.models.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.time.LocalDateTime;
+import com.example.springsecuritydemo.models.articles.Category;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author ducduongn
@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleDto {
+@ToString
+public class ArticleDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
-    private LocalDateTime postedDate;
-
     private String stringPostedDate;
-
-    private LocalDateTime updatedDate;
 
     private String author;
 
@@ -31,4 +30,6 @@ public class ArticleDto {
     private String content;
 
     private String description;
+
+    List<Category> categories;
 }

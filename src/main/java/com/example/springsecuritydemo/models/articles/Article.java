@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -20,7 +21,9 @@ import java.util.List;
                 @Index(name = "url_index", columnList = "url"),
         }
 )
-public class Article {
+public class Article implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

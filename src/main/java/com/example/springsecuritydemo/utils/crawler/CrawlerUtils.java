@@ -23,17 +23,16 @@ public class CrawlerUtils {
         return urlList;
     }
 
-    public static String extractDateTieFromElement(Element element) {
-        String originalDateTimeString = element.text();
+    public static String extractDateTimeFromElement(String dateTimeString) {
 
-        String[] strings = originalDateTimeString.split(", ");
+        String[] strings = dateTimeString.split(", ");
 
-        StringBuilder dateTimeString = new StringBuilder();
+        StringBuilder newDateTimeString = new StringBuilder();
 
         for (int i = 1; i < strings.length; i++) {
-            dateTimeString.append(strings[i] + " ");
+            newDateTimeString.append(strings[i] + " ");
         }
-        return dateTimeString.toString()
+        return newDateTimeString.toString()
                 .replace("(GMT+7)", "").trim()
                 .concat(":00")
                 .replace("/", "-");

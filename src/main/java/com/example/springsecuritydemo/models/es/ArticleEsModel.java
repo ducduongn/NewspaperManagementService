@@ -7,13 +7,20 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author ducduongn
  */
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 @Document(indexName = "es_article")
-public class ArticleEsModel {
+public class ArticleEsModel implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     private Long id;
 
@@ -41,78 +48,4 @@ public class ArticleEsModel {
     @Field(type = FieldType.Text, name = "description")
     private String description;
 
-    public ArticleEsModel() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getPostedDate() {
-        return postedDate;
-    }
-
-    public void setPostedDate(LocalDateTime postedDate) {
-        this.postedDate = postedDate;
-    }
-
-    public String getStringPostedDate() {
-        return stringPostedDate;
-    }
-
-    public void setStringPostedDate(String stringPostedDate) {
-        this.stringPostedDate = stringPostedDate;
-    }
-
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }
