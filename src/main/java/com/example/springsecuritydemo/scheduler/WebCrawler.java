@@ -5,6 +5,7 @@ import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.models.dto.ArticleDto;
+import com.example.springsecuritydemo.repository.ArticleRepository;
 import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import lombok.NoArgsConstructor;

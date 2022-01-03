@@ -1,15 +1,17 @@
 package com.example.springsecuritydemo.controller;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import com.example.springsecuritydemo.models.dto.ArticleUpdateDto;
 import com.example.springsecuritydemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ducduongn
@@ -24,7 +26,6 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @GetMapping("/all")
     public ResponseEntity<?> getAllArticles() {
         List<Article> articleList = articleService.findAll();
 
@@ -36,4 +37,21 @@ public class ArticleController {
         Article article = articleService.findByUrl(articleUrl);
         return ResponseEntity.ok(article);
     }
+
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateArticleById(@PathVariable(value = "id") Long id,
+                                           @RequestBody ArticleUpdateDto articleUpdateDto) {
+        return new ResponseEntity<>(articleService.updateArticleById(id, articleUpdateDto),
+                HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateArticleByUrl(@RequestParam(name = "url") String url,
+                                                @RequestBody ArticleUpdateDto articleUpdateDto) {
+        return new ResponseEntity<>(articleService.updateArticleByUrl(url, articleUpdateDto),
+                HttpStatus.OK);
+    }
+
 }

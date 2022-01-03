@@ -35,6 +35,7 @@ public class SearchController {
         this.modelMapper = modelMapper;
     }
 
+
     @GetMapping("/articles")
     List<ArticleDto> searchByTitle(@RequestParam(name = "query") String query) {
         log.info("Search article by query: " + query);

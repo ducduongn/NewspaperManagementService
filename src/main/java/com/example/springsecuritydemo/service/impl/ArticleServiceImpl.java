@@ -1,6 +1,7 @@
 package com.example.springsecuritydemo.service.impl;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import com.example.springsecuritydemo.models.dto.ArticleUpdateDto;
 import com.example.springsecuritydemo.repository.ArticleRepository;
 import com.example.springsecuritydemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,39 @@ public class ArticleServiceImpl implements ArticleService {
     public Article findByUrl(String url) {
         return articleRepository.findByUrl(url)
                 .orElse(null);
+    }
+
+    @Override
+    public Article updateArticleById(Long id, ArticleUpdateDto articleUpdateDto) {
+        if (articleRepository.existsById(id)) {
+            Article existingArticle = articleRepository.findById(id).get();
+
+            existingArticle.setAuthor(articleUpdateDto.getAuthor());
+            existingArticle.setDescription(articleUpdateDto.getDescription());
+            existingArticle.setContent(articleUpdateDto.getContent());
+            existingArticle.setTitle(articleUpdateDto.getTitle());
+
+            Article updatedArticle = articleRepository.save(existingArticle);
+
+            return updatedArticle;
+        }
+        return null;
+    }
+
+    @Override
+    public Article updateArticleByUrl(String url, ArticleUpdateDto articleUpdateDto) {
+        if (articleRepository.existsByUrl(url)) {
+            Article existingArticle = articleRepository.findByUrl(url).get();
+
+            existingArticle.setAuthor(articleUpdateDto.getAuthor());
+            existingArticle.setDescription(articleUpdateDto.getDescription());
+            existingArticle.setContent(articleUpdateDto.getContent());
+            existingArticle.setTitle(articleUpdateDto.getTitle());
+
+            Article updatedArticle = articleRepository.save(existingArticle);
+
+            return updatedArticle;
+        }
+        return null;
     }
 }
