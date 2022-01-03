@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 /**
  * @author ducduongn
  */
-@Slf4j
 @Service
+@Slf4j
 @RabbitListener(queues = "article_queue")
-public class MQArticleWorker1 {
+public class MQArticleWorker2 {
     @Autowired
     private ArticleRepository articleRepository;
 
@@ -34,8 +34,9 @@ public class MQArticleWorker1 {
                 .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
 
         if (!articleRepository.existsByUrl(article.getUrl())) {
-                        articleRepository.save(article);
-                        log.info("Save article sucessfully: " + article.getTitle());
-                    }
+            articleRepository.save(article);
+            log.info("Save article sucessfully: " + article.getTitle());
+        }
+
     }
 }
