@@ -29,5 +29,5 @@ public class ArticleDto implements Serializable {
 
     private String description;
 
-    List<Category> categories;
+    List<String> categoriesUrls;
 }

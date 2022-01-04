@@ -1,8 +1,10 @@
 package com.example.springsecuritydemo.messaging.rabbitmq;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.models.dto.ArticleDto;
 import com.example.springsecuritydemo.repository.ArticleRepository;
+import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.DateTimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -10,6 +12,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ducduongn
@@ -22,12 +27,32 @@ public class MQArticleWorker1 {
     private ArticleRepository articleRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @RabbitHandler
     public void receiver(ArticleDto articleDto) {
 
-        Article article = modelMapper.map(articleDto, Article.class);
+        Article article = new Article();
+
+        article.setTitle(articleDto.getTitle());
+        article.setDescription(articleDto.getDescription());
+        article.setContent(articleDto.getContent());
+        article.setAuthor(articleDto.getAuthor());
+        article.setStringPostedDate(articleDto.getStringPostedDate());
+
+        List<Category> categoryList = new ArrayList<>();
+
+        for (String categoryUrl : articleDto.getCategoriesUrls()) {
+            if (categoryRepository.existsCategoryByUrl(categoryUrl)) {
+                Category category = categoryRepository.findByUrl(categoryUrl).get();
+
+                categoryList.add(category);
+            }
+        }
+        article.setCategories(categoryList);
 
 //        article.setPostedDate(DateTimeConverter
 //                .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));

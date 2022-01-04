@@ -94,7 +94,6 @@ public class WebCrawler {
 
             //Crawl all articles of one page of a category
             for (Element tag : articlesHtmlTags) {
-                Article article = new Article();
                 ArticleDto articleDto = new ArticleDto();
 
                 Element titleNews = tag.selectFirst(".title-news > a");
@@ -178,7 +177,7 @@ public class WebCrawler {
             //Mapping categories
             List<String> urlCategoryList = CrawlerUtils.getCategoryUrlListFromElement(categoryElements);
 
-            List<Category> categories = new ArrayList<>();
+            List<String> categories = new ArrayList<>();
 
             log.info("Url list: " + urlCategoryList);
 
@@ -189,10 +188,10 @@ public class WebCrawler {
 
                 if (category.getId() != null) {
                     log.info("Category: " + category.getId() + "-" + category.getName());
-                    categories.add(category);
+                    categories.add(category.getUrl());
                 }
             }
-            articleDto.setCategories(categories);
+            articleDto.setCategoriesUrls(categories);
 
         } catch (IOException e) {
             log.error("Error connecting to url!");
