@@ -1,5 +1,6 @@
 package com.example.springsecuritydemo.utils.crawler;
 
+import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.dto.ArticleDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -42,9 +43,9 @@ public class CrawlerUtils {
                 .replace("/", "-");
     }
 
-    public static String getArticleContent(ArticleDto articleDto) {
+    public static String getArticleContent(Article article) {
         try {
-            Document document = Jsoup.connect(articleDto.getUrl()).get();
+            Document document = Jsoup.connect(article.getUrl()).get();
 
             StringBuilder articleContent = new StringBuilder();
 
@@ -60,16 +61,14 @@ public class CrawlerUtils {
 
             return articleContent.toString();
         } catch (IOException exception) {
-            log.info("Error reading document url in getArticleContent!");
+            log.error("Error reading document url in getArticleContent!");
         }
         return null;
     }
 
-    public static String getAuthor(ArticleDto articleDto) {
+    public static String getAuthor(Article article) {
         try {
-            Document document = Jsoup.connect(articleDto.getUrl()).get();
-
-            StringBuilder articleContent = new StringBuilder();
+            Document document = Jsoup.connect(article.getUrl()).get();
 
             Elements contentParagraphs = document.select("article p");
 
@@ -83,9 +82,40 @@ public class CrawlerUtils {
                     }
                 }
             }
+        } catch (IOException exception) {
+            log.error("Error reading document url in getAuthor!");
+        }
+        return null;
+    }
+
+    public static String getDescription(Article article) {
+        try {
+            Document document = Jsoup.connect(article.getUrl()).get();
+
+            Element descriptionEle = document.select(".description").first();
+
+            if (descriptionEle != null) {
+               return descriptionEle.ownText();
+            }
 
         } catch (IOException exception) {
-            log.info("Error reading document url in getAuthor!");
+            log.error("Error reading document url in getDescription!");
+        }
+        return null;
+    }
+
+    public static String getTimeTag(Article article) {
+        try {
+            Document document = Jsoup.connect(article.getUrl()).get();
+
+            Element timeTagEle = document.select(".date").first();
+
+            if (timeTagEle != null && timeTagEle.text().contains("GMT+7")) {
+               return timeTagEle.text().trim();
+            }
+
+        } catch (IOException exception) {
+            log.error("Error reading document url in getTimeTag!");
         }
         return null;
     }

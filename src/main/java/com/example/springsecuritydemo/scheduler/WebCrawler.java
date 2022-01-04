@@ -2,10 +2,8 @@ package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.crawler.URLConstant;
 import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
-import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.models.dto.ArticleDto;
-import com.example.springsecuritydemo.repository.ArticleRepository;
 import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import lombok.NoArgsConstructor;
@@ -40,15 +38,11 @@ public class WebCrawler {
     @Autowired
     private CategoryRepository categoryRepository;
 
-//    @Autowired
-//    private ArticleRepository articleRepository;
-
     @Autowired
     private MQSender mqSender;
 
     @Scheduled(cron = "${interval-in-cron-article}")
     public void crawData() {
-//        crawlCategories();
         crawlAllArticlesFromALlCategories();
     }
 
@@ -84,57 +78,64 @@ public class WebCrawler {
             if ( category.getUrl().length() > 0 &&
                     !category.getUrl().contains("video") &&
                 !category.getUrl().contains("podcast")) {
-                crawlArticle(category.getUrl(), pageNumToCrawl);
+                mqSender.send(category.getUrl());
+                isHavingNextPage(category.getUrl());
             }
         }
     }
 
-    public void crawlArticle(String url, int pageNum) {
+//    public void crawlArticle(String url, int pageNum) {
+//        try {
+//            Document document = Jsoup.connect(url).get();
+//
+//            Elements articlesHtmlTags = document.select("article.item-news");
+//
+//            //Crawl all articles of one page of a category
+//            for (Element tag : articlesHtmlTags) {
+//                ArticleDto articleDto = new ArticleDto();
+//
+//                Element titleNews = tag.selectFirst(".title-news > a");
+//
+//                if (titleNews != null) {
+//                    articleDto.setUrl(titleNews.attr("abs:href"));
+//                    articleDto.setTitle(titleNews.text());
+//                } else {
+//                    continue;
+//                }
+//
+//                if (articleDto.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
+//                    getArticleContent(articleDto);
+//
+//                    mqSender.send(articleDto);
+//                }
+//                crawlOtherPage(url, pageNum);
+//            }
+//
+//        } catch (IOException e) {
+//            log.error("IO  exception!");
+//        }
+//    }
+
+    public void isHavingNextPage(String currentUrl) {
         try {
-            Document document = Jsoup.connect(url).get();
+            Document document = Jsoup.connect(currentUrl).get();
+            //Crawl other pages of the category
+            Element currentPageBtn = document
+                    .select("#pagination .btn-page.active").first();
+            Element nextBtn = document
+                    .select("#pagination .btn-page.next-page ").first();
+            if (currentPageBtn != null && nextBtn != null) {
+                int currentPageNum = Integer.parseInt(currentPageBtn.text());
 
-            Elements articlesHtmlTags = document.select("article.item-news");
-
-            //Crawl all articles of one page of a category
-            for (Element tag : articlesHtmlTags) {
-                ArticleDto articleDto = new ArticleDto();
-
-                Element titleNews = tag.selectFirst(".title-news > a");
-
-                if (titleNews != null) {
-                    articleDto.setUrl(titleNews.attr("abs:href"));
-                    articleDto.setTitle(titleNews.text());
-                } else {
-                    continue;
+                if (currentPageNum <= pageNumToCrawl) {
+                    log.info(currentPageNum + ": " + currentUrl);
+                    String nextPageUrl = nextBtn.attr("abs:href");
+                    mqSender.send(nextPageUrl);
+                    isHavingNextPage(nextPageUrl);
                 }
-
-                if (articleDto.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
-                    getArticleContent(articleDto);
-
-                    mqSender.send(articleDto);
-                }
-                crawlOtherPage(document, url, pageNum);
             }
-
-        } catch (IOException e) {
-            log.error("IO  exception!");
-        }
-    }
-
-    public void crawlOtherPage(Document document, String currentUrl, int pageNum) {
-        //Crawl other pages of the category
-        Element currentPageBtn = document
-                .select("#pagination .btn-page.active").first();
-        Element nextBtn = document
-                .select("#pagination .btn-page.next-page ").first();
-        if (currentPageBtn != null && nextBtn != null) {
-            int currentPageNum = Integer.parseInt(currentPageBtn.text());
-
-            if (currentPageNum <= pageNum) {
-                log.info(currentPageNum + ": " + currentUrl);
-                String nextPageUrl = nextBtn.attr("abs:href");
-                crawlArticle(nextPageUrl, pageNum);
-            }
+        } catch (IOException exception) {
+            log.error("Error in crawlOther page!");
         }
     }
 

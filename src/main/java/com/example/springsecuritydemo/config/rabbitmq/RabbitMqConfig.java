@@ -1,11 +1,16 @@
 package com.example.springsecuritydemo.config.rabbitmq;
 
-import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker1;
+import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker;
 import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +33,15 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    @Value("${spring.rabbitmq.queue}")
+    private String queueName;
+
+    @Value("${spring.rabbitmq.exchange}")
+    private String exchange;
+
+    @Value("${spring.rabbitmq.routingkey}")
+    private String routingKey;
+
     @Bean
     CachingConnectionFactory connectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
@@ -49,8 +63,36 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public MessageListenerAdapter listenerAdapter(MQArticleWorker mqArticleWorker) {
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(mqArticleWorker, "crawlArticle");
+        messageListenerAdapter.setMessageConverter(jsonMessageConverter());
+        return messageListenerAdapter;
+    }
+
+    @Bean
+    public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory,
+                                                          MessageListenerAdapter listenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(queueName);
+        container.setConcurrentConsumers(4);
+        container.setMessageListener(listenerAdapter);
+        return container;
+    }
+
+    @Bean
     public Queue queue() {
         return new Queue("article_queue");
+    }
+
+    @Bean
+    TopicExchange exchange() {
+        return new TopicExchange(exchange);
+    }
+
+    @Bean
+    Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey);
     }
 
     @Profile("sender")
@@ -61,7 +103,8 @@ public class RabbitMqConfig {
 
     @Profile("receiver")
     @Bean
-    public MQArticleWorker1 mqReceiver() {
-        return new MQArticleWorker1();
+    public MQArticleWorker mqArticleWorker1() {
+        return new MQArticleWorker();
     }
+
 }
