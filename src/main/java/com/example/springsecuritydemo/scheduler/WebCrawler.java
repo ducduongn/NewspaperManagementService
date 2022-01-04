@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
@@ -47,10 +48,11 @@ public class WebCrawler {
 
     @Scheduled(cron = "${interval-in-cron-article}")
     public void crawData() {
-        crawlCategories();
+//        crawlCategories();
         crawlAllArticlesFromALlCategories();
     }
 
+    @PostConstruct
     public void crawlCategories() {
         try {
             File file = new File(URLConstant.htmlPath);
@@ -79,7 +81,8 @@ public class WebCrawler {
         List<Category> categoryList = categoryRepository.findAll();
 
         for(Category category : categoryList) {
-            if (!category.getUrl().contains("video") &&
+            if ( category.getUrl().length() > 0 &&
+                    !category.getUrl().contains("video") &&
                 !category.getUrl().contains("podcast")) {
                 crawlArticle(category.getUrl(), pageNumToCrawl);
             }

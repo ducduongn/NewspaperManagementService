@@ -31,7 +31,7 @@ public class MQArticleWorker2 {
         article.setPostedDate(DateTimeConverter
                 .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
 
-        log.info("Receiver has receive a message: " + article.toString());
+//        log.info("Receiver has receive a message: " + article.toString());
 
         if (!articleRepository.existsByUrl(article.getUrl())) {
             articleRepository.save(article);

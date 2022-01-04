@@ -12,6 +12,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class MQArticleWorker1 {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Transactional
     @RabbitHandler
     public void receiver(ArticleDto articleDto) {
 
@@ -41,23 +43,22 @@ public class MQArticleWorker1 {
         article.setDescription(articleDto.getDescription());
         article.setContent(articleDto.getContent());
         article.setAuthor(articleDto.getAuthor());
+        article.setUrl(articleDto.getUrl());
         article.setStringPostedDate(articleDto.getStringPostedDate());
 
         List<Category> categoryList = new ArrayList<>();
 
         for (String categoryUrl : articleDto.getCategoriesUrls()) {
-            if (categoryRepository.existsCategoryByUrl(categoryUrl)) {
-                Category category = categoryRepository.findByUrl(categoryUrl).get();
+            Category category = categoryRepository.findByUrl(categoryUrl)
+                    .orElse(new Category());
 
+            if (category.getUrl() != null) {
                 categoryList.add(category);
             }
         }
         article.setCategories(categoryList);
 
-//        article.setPostedDate(DateTimeConverter
-//                .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
-
-        log.info("Receiver has receive a message: " + article.toString());
+        log.info("Receiver has receive a message: " + article.getTitle());
 
         if (!articleRepository.existsByUrl(article.getUrl())) {
                         articleRepository.save(article);
