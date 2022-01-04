@@ -11,11 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.modelmapper.ModelMapper;
-import org.springframework.amqp.rabbit.annotation.RabbitHandler;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,7 +23,6 @@ import java.util.List;
  */
 @Slf4j
 @Service
-//@RabbitListener(queues = "article_queue")
 public class MQArticleWorker {
     @Autowired
     private ArticleRepository articleRepository;
@@ -35,7 +30,6 @@ public class MQArticleWorker {
     @Autowired
     private CategoryRepository categoryRepository;
 
-//    @RabbitHandler
     public void crawlArticle(String url) {
         try {
             Document document = Jsoup.connect(url).get();
@@ -81,7 +75,7 @@ public class MQArticleWorker {
                     articleRepository.save(article);
                     log.info("Save article successfully: " + url);
                 } else {
-                    log.info("Unsuccessfully saved!");
+                    log.info("Existed article!");
                 }
             }
 
