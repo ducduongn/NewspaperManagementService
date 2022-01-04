@@ -54,7 +54,7 @@ public class WebCrawler {
     public void crawlCategories() {
         try {
             File file = new File(URLConstant.htmlPath);
-            Document document = Jsoup.parse(file, "UTF-8", URLConstant.VN_EXPRESS_HOME);
+            Document document = Jsoup.parse(file, "UTF-8");
 
             Elements menuElement = document.select("li a");
 
@@ -71,7 +71,7 @@ public class WebCrawler {
                 }
             });
         } catch (IOException e) {
-            log.error("IO  exception!");
+            log.error("Category IO  exception!");
         }
     }
 

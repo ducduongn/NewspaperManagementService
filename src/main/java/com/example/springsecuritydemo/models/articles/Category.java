@@ -30,7 +30,7 @@ public class Category implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "url", unique = true)
+    @Column(name = "url")
     private String url;
 
     @JsonIgnore

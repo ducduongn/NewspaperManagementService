@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @Builder
 @Entity
+@ToString
 @Table( name = "article",
         indexes = {
                 @Index(name = "url_index", columnList = "url"),
@@ -60,7 +61,7 @@ public class Article implements Serializable {
             columnDefinition = "text")
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,  cascade = CascadeType.ALL)
     @JoinTable(
             name = "article_category",
             joinColumns = @JoinColumn(name = "article_id"),

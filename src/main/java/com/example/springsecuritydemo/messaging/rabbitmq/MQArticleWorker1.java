@@ -26,16 +26,19 @@ public class MQArticleWorker1 {
 
     @RabbitHandler
     public void receiver(ArticleDto articleDto) {
-        log.info("Receiver has receive a message: " + articleDto.getTitle());
 
         Article article = modelMapper.map(articleDto, Article.class);
 
-        article.setPostedDate(DateTimeConverter
-                .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
+//        article.setPostedDate(DateTimeConverter
+//                .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
+
+        log.info("Receiver has receive a message: " + article.toString());
 
         if (!articleRepository.existsByUrl(article.getUrl())) {
                         articleRepository.save(article);
-                        log.info("Save article sucessfully: " + article.getTitle());
-                    }
+                        log.info("Save article successfully: " + article.getTitle());
+        } else {
+            log.info("Unsuccessfully saved!");
+        }
     }
 }

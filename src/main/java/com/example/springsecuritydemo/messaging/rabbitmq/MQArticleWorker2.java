@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@RabbitListener(queues = "article_queue")
+//@RabbitListener(queues = "article_queue")
 public class MQArticleWorker2 {
     @Autowired
     private ArticleRepository articleRepository;
@@ -24,14 +24,14 @@ public class MQArticleWorker2 {
     @Autowired
     private ModelMapper modelMapper;
 
-    @RabbitHandler
+//    @RabbitHandler
     public void receiver(ArticleDto articleDto) {
-        log.info("Receiver has receive a message: " + articleDto.getTitle());
-
         Article article = modelMapper.map(articleDto, Article.class);
 
         article.setPostedDate(DateTimeConverter
                 .convertDateTimeStringToLocalDateTime(article.getStringPostedDate()));
+
+        log.info("Receiver has receive a message: " + article.toString());
 
         if (!articleRepository.existsByUrl(article.getUrl())) {
             articleRepository.save(article);
