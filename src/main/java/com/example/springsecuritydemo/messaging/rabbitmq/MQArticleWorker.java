@@ -6,7 +6,9 @@ import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.repository.ArticleRepository;
 import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
+import com.example.springsecuritydemo.utils.crawler.DateTimeConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -69,6 +71,9 @@ public class MQArticleWorker {
                     article.setDescription(CrawlerUtils.getDescription(article));
                     article.setContent(CrawlerUtils.getArticleContent(article));
                     article.setStringPostedDate(CrawlerUtils.getTimeTag(article));
+                    article.setPostedDate(DateTimeConverter.convertDateTimeStringToLocalDateTime(
+                            article.getStringPostedDate().trim()
+                    ));
                 }
 
                 if (!articleRepository.existsByUrl(article.getUrl())) {

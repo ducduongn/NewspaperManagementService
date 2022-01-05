@@ -1,7 +1,6 @@
 package com.example.springsecuritydemo.utils.crawler;
 
 import com.example.springsecuritydemo.models.articles.Article;
-import com.example.springsecuritydemo.models.dto.ArticleDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,21 +25,6 @@ public class CrawlerUtils {
         }
 
         return urlList;
-    }
-
-    public static String extractDateTimeFromElement(String dateTimeString) {
-
-        String[] strings = dateTimeString.split(", ");
-
-        StringBuilder newDateTimeString = new StringBuilder();
-
-        for (int i = 1; i < strings.length; i++) {
-            newDateTimeString.append(strings[i] + " ");
-        }
-        return newDateTimeString.toString()
-                .replace("(GMT+7)", "").trim()
-                .concat(":00")
-                .replace("/", "-");
     }
 
     public static String getArticleContent(Article article) {

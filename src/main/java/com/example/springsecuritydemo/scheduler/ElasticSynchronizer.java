@@ -65,7 +65,6 @@ public class ElasticSynchronizer {
             log.info("Syncing article - {}", article.getStringPostedDate());
             esArticleRepository.save(this.modelMapper.map(article, ArticleEsModel.class));
         }
-
     }
 
     public static Predicate getCreatedDatePredicate(CriteriaBuilder cb, Root<?> root) {
