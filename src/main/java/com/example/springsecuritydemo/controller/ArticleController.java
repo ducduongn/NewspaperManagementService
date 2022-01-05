@@ -55,8 +55,12 @@ public class ArticleController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> updateArticleByUrl(@RequestParam(name = "url") String url,
                                                 @RequestBody ArticleUpdateDto articleUpdateDto) {
-        return new ResponseEntity<>(articleService.updateArticleByUrl(url, articleUpdateDto),
-                HttpStatus.OK);
+        Article article = articleService.updateArticleByUrl(url, articleUpdateDto);
+        if (article != null) {
+            return new ResponseEntity<>(articleService.updateArticleByUrl(url, articleUpdateDto),
+                    HttpStatus.OK);
+        }
+        return ResponseEntity.ok(new MessageResponse("Update article fail!"));
     }
 
 }
