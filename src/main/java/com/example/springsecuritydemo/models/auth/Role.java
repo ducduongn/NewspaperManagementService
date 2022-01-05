@@ -1,12 +1,10 @@
 package com.example.springsecuritydemo.models.auth;
 
-import com.example.springsecuritydemo.models.articles.Article;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -24,4 +22,8 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
     private Set<User> users;
+
+    public Role(ERole roleName) {
+        this.roleName = roleName;
+    }
 }

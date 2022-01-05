@@ -1,5 +1,6 @@
 package com.example.springsecuritydemo.controller;
 
+import com.example.springsecuritydemo.auth.payload.respond.MessageResponse;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.dto.ArticleUpdateDto;
 import com.example.springsecuritydemo.service.ArticleService;
@@ -26,6 +27,7 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @GetMapping("/all")
     public ResponseEntity<?> getAllArticles() {
         List<Article> articleList = articleService.findAll();
 
@@ -35,7 +37,10 @@ public class ArticleController {
     @GetMapping("/get")
     public ResponseEntity<?> getArticleByUrl(@RequestParam String articleUrl) {
         Article article = articleService.findByUrl(articleUrl);
-        return ResponseEntity.ok(article);
+        if (article != null) {
+            return ResponseEntity.ok(article);
+        }
+        return ResponseEntity.ok(new MessageResponse("Article not found!"));
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

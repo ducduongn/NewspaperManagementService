@@ -17,7 +17,7 @@ public class DateTimeConverter {
 
         LocalDateTime dateTime = LocalDateTime.parse(shortenDateTimeString, dateTimeFormatter);
 
-        log.info("Date time: " + dateTime);
+//        log.info("Date time: " + dateTime);
 
         return dateTime;
     }

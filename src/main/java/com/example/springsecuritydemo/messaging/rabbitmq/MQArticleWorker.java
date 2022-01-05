@@ -8,13 +8,13 @@ import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import com.example.springsecuritydemo.utils.crawler.DateTimeConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class MQArticleWorker {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Transactional
     public void crawlArticle(String url) {
         try {
             Document document = Jsoup.connect(url).get();
@@ -44,10 +45,6 @@ public class MQArticleWorker {
 
                 Element titleNews = tag.selectFirst(".title-news > a");
 
-                Elements categoryElements= document.select((".breadcrumb li a"));
-
-                List<String> urlCategoryList = CrawlerUtils.getCategoryUrlListFromElement(categoryElements);
-
                 if (titleNews != null) {
                     article.setUrl(titleNews.attr("abs:href"));
                     article.setTitle(titleNews.text());
@@ -56,16 +53,19 @@ public class MQArticleWorker {
                 }
 
                 List<Category> categories = new ArrayList<>();
+                List<String> urlCategoryList = CrawlerUtils.collectCategoriesUrlFromArticle(article);
 
                 if (article.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
                     for (String categoryUrl : urlCategoryList) {
                         Category category = categoryRepository.findByUrl(categoryUrl)
                                 .orElse(new Category());
 
+
                         if (category.getUrl() != null) {
                             categories.add(category);
                         }
                     }
+                    log.info("ArticleUrl: " + article.getUrl()+ " " + categories);
                     article.setCategories(categories);
                     article.setAuthor(CrawlerUtils.getAuthor(article));
                     article.setDescription(CrawlerUtils.getDescription(article));
@@ -77,8 +77,8 @@ public class MQArticleWorker {
                 }
 
                 if (!articleRepository.existsByUrl(article.getUrl())) {
-                    articleRepository.save(article);
-                    log.info("Save article successfully: " + url);
+                    Article saveArticle = articleRepository.save(article);
+                    log.info("Save article successfully: " + saveArticle.getUrl());
                 } else {
                     log.info("Existed article!");
                 }

@@ -1,11 +1,13 @@
 package com.example.springsecuritydemo.utils.crawler;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import com.example.springsecuritydemo.models.articles.Category;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,16 +18,6 @@ import java.util.List;
  */
 @Slf4j
 public class CrawlerUtils {
-
-    public static List<String> getCategoryUrlListFromElement(Elements categoryElements) {
-        List<String> urlList = new ArrayList<>();
-
-        for (Element element:categoryElements) {
-            urlList.add(element.attr("abs:href").trim());
-        }
-
-        return urlList;
-    }
 
     public static String getArticleContent(Article article) {
         try {
@@ -102,6 +94,27 @@ public class CrawlerUtils {
             log.error("Error reading document url in getTimeTag!");
         }
         return null;
+    }
+
+    public static List<String> collectCategoriesUrlFromArticle(Article article) {
+        List<String> categoryUrl = new ArrayList<>();
+
+        try {
+            Document document = Jsoup.connect(article.getUrl()).get();
+
+            Elements categoryElements= document.select((".breadcrumb li a"));
+
+            for (Element element:categoryElements) {
+                String url = element.attr("abs:href").trim();
+
+                categoryUrl.add(url);
+            }
+
+        } catch (IOException e) {
+            log.error("Error collect catogories!");
+        }
+
+        return categoryUrl;
     }
 }
 
