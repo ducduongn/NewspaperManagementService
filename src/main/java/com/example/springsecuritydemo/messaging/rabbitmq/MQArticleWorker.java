@@ -1,6 +1,5 @@
 package com.example.springsecuritydemo.messaging.rabbitmq;
 
-import com.example.springsecuritydemo.constant.crawler.URLConstant;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.repository.ArticleRepository;
@@ -8,16 +7,10 @@ import com.example.springsecuritydemo.repository.CategoryRepository;
 import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import com.example.springsecuritydemo.utils.crawler.DateTimeConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +26,19 @@ public class MQArticleWorker {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private MQSynchronizeSender mqSynchronizeSender;
+
     @Transactional
     public void crawlArticle(String articleUrl) {
+        log.info("Crawl url: " + articleUrl);
         List<String> urlCategoryList = CrawlerUtils.collectCategoriesUrlFromArticle(articleUrl);
+
+        // return if category list can not be crawled
+        if (urlCategoryList.size() == 0) {
+            return;
+        }
+
         List<Category> categories = new ArrayList<>();
 
         Article article = new Article();
@@ -52,8 +55,8 @@ public class MQArticleWorker {
             }
         }
 
-
         article.setUrl(articleUrl);
+        article.setTitle(CrawlerUtils.getArticleTitle(articleUrl));
         article.setCategories(categories);
         article.setAuthor(CrawlerUtils.getAuthor(articleUrl));
         article.setDescription(CrawlerUtils.getDescription(articleUrl));
@@ -73,6 +76,7 @@ public class MQArticleWorker {
         } else {
             log.info("Article existed" + article.getUrl());
         }
+        mqSynchronizeSender.send(article);
     }
 
 }

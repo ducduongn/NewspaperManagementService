@@ -13,7 +13,8 @@ import java.util.Optional;
  */
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<Article, Long>,
+        JpaSpecificationExecutor<Article>{
     List<Article> findAll();
 
     Optional<Article> findById(Long aLong);
