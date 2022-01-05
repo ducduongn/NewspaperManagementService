@@ -76,7 +76,7 @@ public class RabbitMqConfig {
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
         container.setConcurrentConsumers(5);
-        container.setMaxConcurrentConsumers(5);
+        container.setMaxConcurrentConsumers(6);
         container.setMessageListener(listenerAdapter);
         return container;
     }
@@ -94,18 +94,6 @@ public class RabbitMqConfig {
     @Bean
     Binding binding(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey);
-    }
-
-    @Profile("sender")
-    @Bean
-    public MQSender mqSender() {
-        return new MQSender();
-    }
-
-    @Profile("receiver")
-    @Bean
-    public MQArticleWorker mqArticleWorker1() {
-        return new MQArticleWorker();
     }
 
 }

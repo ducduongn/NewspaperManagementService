@@ -29,7 +29,6 @@ public class MQSender {
     private Queue queue;
 
     public void send(String url) {
-//        String jsonArticle = new Gson().toJson(article);
 
         log.info("Article is being sent!");
         rabbitTemplate.convertAndSend(exchange, routingKey, url);
