@@ -34,59 +34,44 @@ public class MQArticleWorker {
     private CategoryRepository categoryRepository;
 
     @Transactional
-    public void crawlArticle(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
+    public void crawlArticle(String articleUrl) {
+        List<String> urlCategoryList = CrawlerUtils.collectCategoriesUrlFromArticle(articleUrl);
+        List<Category> categories = new ArrayList<>();
 
-            Elements articlesHtmlTags = document.select("article.item-news");
+        Article article = new Article();
 
-            //Crawl all articles of one page of a category
-            for (Element tag : articlesHtmlTags) {
-                Article article = new Article();
+        article.setUrl(articleUrl);
 
-                Element titleNews = tag.selectFirst(".title-news > a");
-
-                if (titleNews != null) {
-                    article.setUrl(titleNews.attr("abs:href"));
-                    article.setTitle(titleNews.text());
-                } else {
-                    continue;
-                }
-
-                List<Category> categories = new ArrayList<>();
-                List<String> urlCategoryList = CrawlerUtils.collectCategoriesUrlFromArticle(article);
-
-                if (article.getUrl().contains(URLConstant.VN_EXPRESS_HOME)) {
-                    for (String categoryUrl : urlCategoryList) {
-                        Category category = categoryRepository.findByUrl(categoryUrl)
-                                .orElse(new Category());
+        for (String categoryUrl : urlCategoryList) {
+            Category category = categoryRepository.findByUrl(categoryUrl)
+                    .orElse(new Category());
 
 
-                        if (category.getUrl() != null) {
-                            categories.add(category);
-                        }
-                    }
-                    log.info("ArticleUrl: " + article.getUrl()+ " from: " + url);
-                    article.setCategories(categories);
-                    article.setAuthor(CrawlerUtils.getAuthor(article));
-                    article.setDescription(CrawlerUtils.getDescription(article));
-                    article.setContent(CrawlerUtils.getArticleContent(article));
-                    article.setStringPostedDate(CrawlerUtils.getTimeTag(article));
-                    article.setPostedDate(DateTimeConverter.convertDateTimeStringToLocalDateTime(
-                            article.getStringPostedDate().trim()
-                    ));
-                }
-
-                if (!articleRepository.existsByUrl(article.getUrl())) {
-                    Article saveArticle = articleRepository.save(article);
-                    log.info("Save article successfully: " + saveArticle.getUrl());
-                } else {
-                    log.info("Existed article!");
-                }
+            if (category.getUrl() != null) {
+                categories.add(category);
             }
+        }
 
-        } catch (IOException e) {
-            log.error("IO  exception!");
+
+        article.setUrl(articleUrl);
+        article.setCategories(categories);
+        article.setAuthor(CrawlerUtils.getAuthor(articleUrl));
+        article.setDescription(CrawlerUtils.getDescription(articleUrl));
+        article.setContent(CrawlerUtils.getArticleContent(articleUrl));
+        article.setStringPostedDate(CrawlerUtils.getTimeTag(articleUrl));
+        article.setPostedDate(DateTimeConverter.convertDateTimeStringToLocalDateTime(
+                article.getStringPostedDate().trim()
+        ));
+
+        if ( !articleRepository.existsByUrl(articleUrl)) {
+            try {
+                articleRepository.save(article);
+                log.info("Successfully save article: " + article.getUrl());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            log.info("Article existed" + article.getUrl());
         }
     }
 

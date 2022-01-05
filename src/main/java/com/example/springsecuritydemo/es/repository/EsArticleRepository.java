@@ -13,4 +13,6 @@ public interface EsArticleRepository extends ElasticsearchRepository<ArticleEsMo
     Article findByAuthor(String author);
 
     Article findByUrl(String url);
+
+    Boolean existsByUrl(String url);
 }

@@ -28,10 +28,10 @@ public class MQSender {
     @Autowired
     private Queue queue;
 
-    public void send(String url) {
+    public void send(String articleUrl) {
 
         log.info("Article is being sent!");
-        rabbitTemplate.convertAndSend(exchange, routingKey, url);
+        rabbitTemplate.convertAndSend(exchange, routingKey, articleUrl);
         log.info("Article has been sent!");
     }
 }

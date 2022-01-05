@@ -3,9 +3,7 @@ package com.example.springsecuritydemo.scheduler;
 import com.example.springsecuritydemo.constant.crawler.URLConstant;
 import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
 import com.example.springsecuritydemo.models.articles.Category;
-import com.example.springsecuritydemo.models.dto.ArticleDto;
 import com.example.springsecuritydemo.repository.CategoryRepository;
-import com.example.springsecuritydemo.utils.crawler.CrawlerUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,13 +74,37 @@ public class WebCrawler {
             if ( category.getUrl().length() > 0 &&
                     !category.getUrl().contains("video") &&
                 !category.getUrl().contains("podcast")) {
-                mqSender.send(category.getUrl());
-                isHavingNextPage(category.getUrl());
+                extractArticleUrl(category.getUrl());
             }
         }
     }
 
-    public void isHavingNextPage(String currentUrl) {
+
+    public void extractArticleUrl(String categoryUrl) {
+        try {
+            Document document = Jsoup.connect(categoryUrl).get();
+
+            Elements articlesHtmlTags = document.select("article.item-news");
+
+            for (Element tag : articlesHtmlTags) {
+                Element titleNews = tag.selectFirst(".title-news > a");
+
+                if (titleNews != null) {
+                    String articleUrl = titleNews.attr("abs:href");
+
+                    if (articleUrl.contains(URLConstant.VN_EXPRESS_HOME)) {
+                        mqSender.send(articleUrl);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.error("Error in extracting categoryUrl");
+        }
+
+        checkIfHaveNextPage(categoryUrl);
+    }
+
+    public void checkIfHaveNextPage(String currentUrl) {
         try {
             Document document = Jsoup.connect(currentUrl).get();
             //Crawl other pages of the category
@@ -98,8 +118,7 @@ public class WebCrawler {
                 if (currentPageNum <= pageNumToCrawl) {
                     log.info(currentPageNum + ": " + currentUrl);
                     String nextPageUrl = nextBtn.attr("abs:href");
-                    mqSender.send(nextPageUrl);
-                    isHavingNextPage(nextPageUrl);
+                    extractArticleUrl(nextPageUrl);
                 }
             }
         } catch (IOException exception) {

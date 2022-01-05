@@ -19,9 +19,25 @@ import java.util.List;
 @Slf4j
 public class CrawlerUtils {
 
-    public static String getArticleContent(Article article) {
+    public static String getArticleTitle(String articleUrl) {
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(articleUrl).get();
+
+            Element articleElement = document.select(".title-detail").first();
+
+            if (articleElement != null) {
+                return articleElement.text();
+            }
+
+        } catch (IOException exception) {
+            log.error("Error reading document url in get article url!");
+        }
+        return null;
+    }
+
+    public static String getArticleContent(String articleUrl) {
+        try {
+            Document document = Jsoup.connect(articleUrl).get();
 
             StringBuilder articleContent = new StringBuilder();
 
@@ -42,9 +58,9 @@ public class CrawlerUtils {
         return null;
     }
 
-    public static String getAuthor(Article article) {
+    public static String getAuthor(String categoryUrl) {
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(categoryUrl).get();
 
             Elements contentParagraphs = document.select("article p");
 
@@ -64,9 +80,9 @@ public class CrawlerUtils {
         return null;
     }
 
-    public static String getDescription(Article article) {
+    public static String getDescription(String categoryUrl) {
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(categoryUrl).get();
 
             Element descriptionEle = document.select(".description").first();
 
@@ -80,9 +96,9 @@ public class CrawlerUtils {
         return null;
     }
 
-    public static String getTimeTag(Article article) {
+    public static String getTimeTag(String categoryUrl) {
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(categoryUrl).get();
 
             Element timeTagEle = document.select(".date").first();
 
@@ -96,25 +112,25 @@ public class CrawlerUtils {
         return null;
     }
 
-    public static List<String> collectCategoriesUrlFromArticle(Article article) {
-        List<String> categoryUrl = new ArrayList<>();
+    public static List<String> collectCategoriesUrlFromArticle(String categoryUrl) {
+        List<String> categoryUrlList = new ArrayList<>();
 
         try {
-            Document document = Jsoup.connect(article.getUrl()).get();
+            Document document = Jsoup.connect(categoryUrl).get();
 
             Elements categoryElements= document.select((".breadcrumb li a"));
 
             for (Element element:categoryElements) {
                 String url = element.attr("abs:href").trim();
 
-                categoryUrl.add(url);
+                categoryUrlList.add(url);
             }
 
         } catch (IOException e) {
             log.error("Error collect catogories!");
         }
 
-        return categoryUrl;
+        return categoryUrlList;
     }
 }
 
