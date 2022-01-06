@@ -1,12 +1,11 @@
 package com.example.springsecuritydemo.config.rabbitmq;
 
 import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -21,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @author ducduongn
  */
+@EnableRabbit
 @Configuration
 public class CrawlingMQConfig {
     @Value("${spring.rabbitmq.host}")
@@ -102,5 +102,10 @@ public class CrawlingMQConfig {
             @Qualifier("crawlingQueue") Queue crawlingQueue,
             @Qualifier("crawlingExchange") TopicExchange crawlingExchange) {
         return BindingBuilder.bind(crawlingQueue).to(crawlingExchange).with(routingKey);
+    }
+
+    @Bean(name = "crawlerAdmin")
+    public AmqpAdmin pimAmqpAdmin(@Qualifier("crawlingConnectionFactory") ConnectionFactory connectionFactory) {
+        return new RabbitAdmin(connectionFactory);
     }
 }
