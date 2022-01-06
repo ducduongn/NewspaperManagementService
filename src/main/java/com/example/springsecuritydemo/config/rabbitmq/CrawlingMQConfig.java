@@ -41,14 +41,12 @@ public class CrawlingMQConfig {
     @Value("${spring.rabbitmq.routingkey}")
     private String routingKey;
 
-    @Qualifier("crawlingMessageConverter")
-    @Bean
+    @Bean(name = "crawlingMessageConverter")
     public MessageConverter crawlingMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Qualifier("crawlingRabbitTemplate")
-    @Bean
+    @Bean(name = "crawlingRabbitTemplate")
     public RabbitTemplate crawlingRabbitTemplate(
             @Qualifier("crawlingConnectionFactory")  ConnectionFactory crawlingConnectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(crawlingConnectionFactory);
@@ -57,8 +55,7 @@ public class CrawlingMQConfig {
     }
 
 
-    @Qualifier("crawlingConnectionFactory")
-    @Bean
+    @Bean(name = "crawlingConnectionFactory")
     CachingConnectionFactory crawlingConnectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
         cachingConnectionFactory.setUsername(username);
@@ -66,8 +63,7 @@ public class CrawlingMQConfig {
         return cachingConnectionFactory;
     }
 
-    @Qualifier("crawlingMessageListenerAdapter")
-    @Bean
+    @Bean(name = "crawlingMessageListenerAdapter")
     public MessageListenerAdapter crawlingMessageListenerAdapter(MQArticleWorker mqArticleWorker) {
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(mqArticleWorker, "crawlArticle");
         messageListenerAdapter.setMessageConverter(crawlingMessageConverter());
@@ -75,8 +71,7 @@ public class CrawlingMQConfig {
     }
 
 
-    @Qualifier("crawlingSimpleMessageListenerContainer")
-    @Bean
+    @Bean(name = "crawlingSimpleMessageListenerContainer")
     public SimpleMessageListenerContainer crawlingSimpleMessageListenerContainer(
             @Qualifier("crawlingConnectionFactory") ConnectionFactory crawlingConnectionFactory,
             @Qualifier("crawlingMessageListenerAdapter") MessageListenerAdapter crawlingMessageListenerAdapter) {
@@ -91,21 +86,21 @@ public class CrawlingMQConfig {
         return crawlingContainer;
     }
 
-    @Qualifier("crawlingQueue")
-    @Bean
+    @Bean(name = "crawlingQueue")
     public Queue crawlingQueue() {
         return new Queue(queueName);
     }
 
-    @Qualifier("crawlingExchange")
-    @Bean
+    @Bean(name = "crawlingExchange")
     TopicExchange crawlingExchange() {
         return new TopicExchange(exchange);
     }
 
-    @Qualifier("crawlingBinding")
-    @Bean
-    Binding crawlingBinding(Queue crawlingQueue, TopicExchange crawlingExchange) {
+
+    @Bean(name = "crawlingBinding")
+    Binding crawlingBinding(
+            @Qualifier("crawlingQueue") Queue crawlingQueue,
+            @Qualifier("crawlingExchange") TopicExchange crawlingExchange) {
         return BindingBuilder.bind(crawlingQueue).to(crawlingExchange).with(routingKey);
     }
 }
