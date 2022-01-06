@@ -22,7 +22,7 @@ public class ArticleEsModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    private Long id;
+    private String id;
 
     @Field(type = FieldType.Date, name = "posted_date", format = DateFormat.date_time)
     private LocalDateTime postedDate;

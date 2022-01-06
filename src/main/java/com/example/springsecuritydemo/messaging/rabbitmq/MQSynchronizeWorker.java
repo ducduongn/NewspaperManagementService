@@ -29,10 +29,10 @@ public class MQSynchronizeWorker {
 
     @Transactional
     public void synchronizeArticleFromJpaToEs(Article article) {
-        TypeMap<Article, ArticleEsModel> modelTypeMap = modelMapper.createTypeMap(Article.class, ArticleEsModel.class);
-
-        //skip id field on ArticleEsModel
-        modelTypeMap.addMappings(mapper -> mapper.skip(ArticleEsModel::setId));
+//        TypeMap<Article, ArticleEsModel> modelTypeMap = modelMapper.createTypeMap(Article.class, ArticleEsModel.class);
+//
+//        //skip id field on ArticleEsModel
+//        modelTypeMap.addMappings(mapper -> mapper.skip(ArticleEsModel::setId));
 
         ArticleEsModel articleEsModel = this.modelMapper.map(article, ArticleEsModel.class);
 
@@ -47,8 +47,8 @@ public class MQSynchronizeWorker {
                 log.info("Article is existed");
             }
         } catch (Exception e) {
-            log.error("Error in synchronize article: " + articleEsModel.getUrl());
-//            e.printStackTrace();
+//            log.error("Error in synchronize article: " + articleEsModel.getUrl());
+            e.printStackTrace();
         }
     }
 }
