@@ -105,7 +105,7 @@ public class SynchronizeMQConfig {
     }
 
     @Bean(name = "synchronizeAdmin")
-    public AmqpAdmin pimAmqpAdmin(@Qualifier("synchronizeConnectionFactory") ConnectionFactory connectionFactory) {
+    public AmqpAdmin amqpAdmin( @Qualifier("synchronizeConnectionFactory") ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
     }
 }

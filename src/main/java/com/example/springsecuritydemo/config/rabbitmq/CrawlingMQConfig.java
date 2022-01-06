@@ -105,7 +105,7 @@ public class CrawlingMQConfig {
     }
 
     @Bean(name = "crawlerAdmin")
-    public AmqpAdmin pimAmqpAdmin(@Qualifier("crawlingConnectionFactory") ConnectionFactory connectionFactory) {
+    public AmqpAdmin amqpAdmin(@Qualifier("crawlingConnectionFactory") ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
     }
 }
