@@ -46,26 +46,26 @@ public class ElasticSynchronizer {
         this.modelMapper = modelMapper;
     }
 
-    @Scheduled(cron = "${interval-sync-cron-article}")
-    @Transactional
-    public void sync() {
-        log.info("Start syncing...");
-        this.syncArticle();
-        log.info("End syncing!");
-    }
+//    @Scheduled(cron = "${interval-sync-cron-article}")
+//    @Transactional
+//    public void sync() {
+//        log.info("Start syncing...");
+//        this.syncArticle();
+//        log.info("End syncing!");
+//    }
 
-    public void syncArticle() {
-        List<Article> articleList;
-        if (esArticleRepository.count() == 0) {
-            articleList = articleRepository.findAll();
-        } else {
-            articleList = articleRepository.findAll(postedDateAfter(LocalDateTime.now()));
-        }
-        for(Article article: articleList) {
-            log.info("Syncing article - {}", article.getStringPostedDate());
-            esArticleRepository.save(this.modelMapper.map(article, ArticleEsModel.class));
-        }
-    }
+//    public void syncArticle() {
+//        List<Article> articleList;
+//        if (esArticleRepository.count() == 0) {
+//            articleList = articleRepository.findAll();
+//        } else {
+//            articleList = articleRepository.findAll(postedDateAfter(LocalDateTime.now()));
+//        }
+//        for(Article article: articleList) {
+//            log.info("Syncing article - {}", article.getStringPostedDate());
+//            esArticleRepository.save(this.modelMapper.map(article, ArticleEsModel.class));
+//        }
+//    }
 
     public static Predicate getCreatedDatePredicate(CriteriaBuilder cb, Root<?> root) {
         Expression<Timestamp> currentTime;

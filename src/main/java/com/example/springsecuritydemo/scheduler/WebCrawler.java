@@ -1,7 +1,7 @@
 package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.crawler.URLConstant;
-import com.example.springsecuritydemo.messaging.rabbitmq.MQCrawlingSender;
+import com.example.springsecuritydemo.messaging.rabbitmq.MQSender;
 import com.example.springsecuritydemo.models.articles.Category;
 import com.example.springsecuritydemo.repository.CategoryRepository;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class WebCrawler {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private MQCrawlingSender mqCrawlingSender;
+    private MQSender mqSender;
 
     @Scheduled(cron = "${interval-in-cron-article}")
     public void crawData() {
@@ -93,7 +93,7 @@ public class WebCrawler {
                     String articleUrl = titleNews.attr("abs:href");
 
                     if (articleUrl.contains(URLConstant.VN_EXPRESS_HOME)) {
-                        mqCrawlingSender.send(articleUrl);
+                        mqSender.send(articleUrl);
                     }
                 }
             }

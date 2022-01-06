@@ -6,6 +6,8 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,6 +18,8 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +27,7 @@ import org.springframework.context.annotation.Configuration;
  * @author ducduongn
  */
 @Configuration
+@ConfigurationProperties("spring.rabbitmq.second")
 public class SynchronizeMQConfig {
     @Value("${spring.rabbitmq.host}")
     private String host;
@@ -33,6 +38,9 @@ public class SynchronizeMQConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+
     @Value("${spring.rabbitmq.sync-queue}")
     private String queueName;
 
@@ -42,14 +50,12 @@ public class SynchronizeMQConfig {
     @Value("${spring.rabbitmq.sync-routingkey}")
     private String routingKey;
 
-    @Qualifier("synchronizeMessageConverter")
-    @Bean
+    @Bean(name = "synchronizeMessageConverter")
     public MessageConverter synchronizeMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
-    @Qualifier("synchronizeRabbitTemplate")
-    @Bean
+    @Bean(name = "synchronizeRabbitTemplate")
     public RabbitTemplate synchronizeRabbitTemplate(
             @Qualifier("synchronizeConnectionFactory")ConnectionFactory synchronizeConnectionFactory)
     {
@@ -58,18 +64,16 @@ public class SynchronizeMQConfig {
         return rabbitTemplate;
     }
 
-
-    @Bean
-    @Qualifier("synchronizeConnectionFactory")
+    @Bean(name = "synchronizeConnectionFactory")
     CachingConnectionFactory synchronizeConnectionFactory() {
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
+        cachingConnectionFactory.setPort(port);
         cachingConnectionFactory.setUsername(username);
         cachingConnectionFactory.setPassword(password);
         return cachingConnectionFactory;
     }
 
-    @Bean
-    @Qualifier("synchronizeListenerAdapter")
+    @Bean(name = "synchronizeListenerAdapter")
     public MessageListenerAdapter synchronizeListenerAdapter(MQSynchronizeWorker mqArticleWorker) {
         MessageListenerAdapter messageListenerAdapter =
                 new MessageListenerAdapter(mqArticleWorker,
@@ -78,35 +82,47 @@ public class SynchronizeMQConfig {
         return messageListenerAdapter;
     }
 
-    @Qualifier("synchronizeSimpleMessageListenerContainer")
-    @Bean
-    public SimpleMessageListenerContainer synchronizeSimpleMessageListenerContainer(
-            @Qualifier("synchronizeConnectionFactory") ConnectionFactory synchronizeConnectionFactory,
-            @Qualifier("synchronizeListenerAdapter") MessageListenerAdapter synchronizeListenerAdapter) {
-        SimpleMessageListenerContainer synchronizeContainer = new SimpleMessageListenerContainer();
-        synchronizeContainer.setConnectionFactory(synchronizeConnectionFactory);
-        synchronizeContainer.setQueueNames(queueName);
-        synchronizeContainer.setConcurrentConsumers(5);
-        synchronizeContainer.setMaxConcurrentConsumers(6);
-        synchronizeContainer.setMessageListener(synchronizeListenerAdapter);
-        return synchronizeContainer;
+    @Bean(name = "synchronizeSimpleRabbitListenerContainerFactory")
+    public SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory (
+            SimpleRabbitListenerContainerFactoryConfigurer containerFactoryConfigurer,
+            @Qualifier("synchronizeConnectionFactory") ConnectionFactory synchronizeConnectionFactory
+    ) {
+        SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+
+        containerFactoryConfigurer.configure(simpleRabbitListenerContainerFactory, synchronizeConnectionFactory);
+        simpleRabbitListenerContainerFactory.setConcurrentConsumers(5);
+        simpleRabbitListenerContainerFactory.setMaxConcurrentConsumers(6);
+
+        return simpleRabbitListenerContainerFactory;
     }
 
-    @Qualifier("synchronizeQueue")
-    @Bean
+    @Bean(name = "synchronizeSimpleMessageListenerContainer")
+    public SimpleMessageListenerContainer synchronizeSimpleMessageListenerContainer(
+            @Qualifier("synchronizeSimpleRabbitListenerContainerFactory") SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory,
+            @Qualifier("synchronizeListenerAdapter") MessageListenerAdapter synchronizeMessageListenerAdapter) {
+
+        SimpleRabbitListenerEndpoint endpoint = new SimpleRabbitListenerEndpoint();
+
+        endpoint.setQueueNames(queueName);
+        endpoint.setMessageListener(synchronizeMessageListenerAdapter);
+
+        return simpleRabbitListenerContainerFactory.createListenerContainer(endpoint);
+    }
+
+    @Bean(name = "synchronizeQueue")
     public Queue synchronizeQueue() {
         return new Queue(queueName);
     }
 
-    @Qualifier("synchronizeExchange")
-    @Bean
+    @Bean(name = "synchronizeExchange")
     TopicExchange synchronizeExchange() {
         return new TopicExchange(exchange);
     }
 
-    @Qualifier("synchronizeBinding")
-    @Bean
-    Binding synchronizeBinding(Queue synchronizeQueue, TopicExchange synchronizeExchange) {
+    @Bean(name = "synchronizeBinding")
+    Binding synchronizeBinding(
+            @Qualifier("synchronizeQueue") Queue synchronizeQueue,
+            @Qualifier("synchronizeExchange") TopicExchange synchronizeExchange) {
         return BindingBuilder.bind(synchronizeQueue).to(synchronizeExchange).with(routingKey);
     }
 }
