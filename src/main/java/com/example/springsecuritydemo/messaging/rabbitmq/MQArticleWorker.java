@@ -71,6 +71,7 @@ public class MQArticleWorker {
                 articleRepository.save(article);
                 log.info("Successfully save article: " + article.getUrl());
             } catch (Exception e) {
+                log.error("Error while saving article: " + article.getUrl());
                 e.printStackTrace();
             }
         } else {

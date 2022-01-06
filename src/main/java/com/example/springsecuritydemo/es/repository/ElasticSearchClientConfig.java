@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.config;
+package com.example.springsecuritydemo.es.repository;
 
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;

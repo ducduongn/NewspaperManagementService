@@ -47,7 +47,7 @@ public class SearchController {
 
         articleEsModels.forEach(esModel -> {
             articleDtos.add(modelMapper.map(esModel, ArticleDto.class));
-            log.info(esModel.getTitle());
+//            log.info(esModel.getTitle());
         });
 
         return articleDtos;

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.config.rabbitmq;
+package com.example.springsecuritydemo.messaging.rabbitmq;
 
 import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker;
 import com.example.springsecuritydemo.messaging.rabbitmq.MQSynchronizeWorker;
