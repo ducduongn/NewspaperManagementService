@@ -10,9 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EsArticleRepository extends ElasticsearchRepository<ArticleEsModel, Long> {
-    Article findByAuthor(String author);
+    ArticleEsModel findByAuthor(String author);
 
-    Article findByUrl(String url);
-
-    Boolean existsByUrl(String url);
+    ArticleEsModel findByUrl(String url);
 }

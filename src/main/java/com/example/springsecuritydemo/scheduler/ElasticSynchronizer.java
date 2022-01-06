@@ -1,6 +1,7 @@
 package com.example.springsecuritydemo.scheduler;
 
 import com.example.springsecuritydemo.constant.Constants;
+import com.example.springsecuritydemo.messaging.rabbitmq.MQSynchronizeSender;
 import com.example.springsecuritydemo.models.es.ArticleEsModel;
 import com.example.springsecuritydemo.es.repository.EsArticleRepository;
 import com.example.springsecuritydemo.models.articles.Article;
@@ -38,6 +39,9 @@ public class ElasticSynchronizer {
     private final ModelMapper modelMapper;
 
     @Autowired
+    private MQSynchronizeSender mqSynchronizeSender;
+
+    @Autowired
     public ElasticSynchronizer(ArticleRepository articleRepository,
                                EsArticleRepository esArticleRepository,
                                ModelMapper modelMapper) {
@@ -62,8 +66,8 @@ public class ElasticSynchronizer {
             articleList = articleRepository.findAll(postedDateAfter(LocalDateTime.now()));
         }
         for(Article article: articleList) {
-            log.info("Syncing article - {}", article.getStringPostedDate());
-            esArticleRepository.save(this.modelMapper.map(article, ArticleEsModel.class));
+            log.info("Sending article - {}", article.getUrl());
+            mqSynchronizeSender.send(article);
         }
     }
 

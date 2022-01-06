@@ -5,19 +5,14 @@ import com.example.springsecuritydemo.models.auth.Role;
 import com.example.springsecuritydemo.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-@ComponentScan
-@EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class})
+@SpringBootApplication(exclude = {RabbitAutoConfiguration.class})
 public class SpringSecurityDemoApplication {
 
     @Autowired
