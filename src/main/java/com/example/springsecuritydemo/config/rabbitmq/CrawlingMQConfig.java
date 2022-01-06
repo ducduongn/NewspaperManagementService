@@ -1,6 +1,7 @@
 package com.example.springsecuritydemo.config.rabbitmq;
 
 import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -43,7 +44,9 @@ public class CrawlingMQConfig {
 
     @Bean(name = "crawlingMessageConverter")
     public MessageConverter crawlingMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+
+        return new Jackson2JsonMessageConverter(mapper);
     }
 
     @Bean(name = "crawlingRabbitTemplate")

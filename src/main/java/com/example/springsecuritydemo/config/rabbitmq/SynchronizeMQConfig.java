@@ -2,6 +2,7 @@ package com.example.springsecuritydemo.config.rabbitmq;
 
 import com.example.springsecuritydemo.messaging.rabbitmq.MQArticleWorker;
 import com.example.springsecuritydemo.messaging.rabbitmq.MQSynchronizeWorker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -44,7 +45,9 @@ public class SynchronizeMQConfig {
 
     @Bean(name = "synchronizeMessageConverter")
     public MessageConverter synchronizeMessageConverter() {
-        return new Jackson2JsonMessageConverter();
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+
+        return new Jackson2JsonMessageConverter(mapper);
     }
 
     @Bean(name = "synchronizeRabbitTemplate")
@@ -66,9 +69,9 @@ public class SynchronizeMQConfig {
     }
 
     @Bean(name = "synchronizeListenerAdapter")
-    public MessageListenerAdapter synchronizeListenerAdapter(MQSynchronizeWorker mqArticleWorker) {
+    public MessageListenerAdapter synchronizeListenerAdapter(MQSynchronizeWorker mqSynchronizeWorker) {
         MessageListenerAdapter messageListenerAdapter =
-                new MessageListenerAdapter(mqArticleWorker,
+                new MessageListenerAdapter(mqSynchronizeWorker,
                 "synchronizeArticleFromJpaToEs");
         messageListenerAdapter.setMessageConverter(synchronizeMessageConverter());
         return messageListenerAdapter;

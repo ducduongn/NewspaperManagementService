@@ -18,7 +18,7 @@ public class MQSynchronizeSender {
     @Value("${spring.rabbitmq.sync-queue}")
     private String queueName;
 
-    @Value("${spring.rabbitmq.exchange}")
+    @Value("${spring.rabbitmq.sync-exchange}")
     private String exchange;
 
     @Value("${spring.rabbitmq.sync-routingkey}")
