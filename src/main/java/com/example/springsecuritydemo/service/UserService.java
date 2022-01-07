@@ -1,15 +1,25 @@
 package com.example.springsecuritydemo.service;
 
 import com.example.springsecuritydemo.models.auth.User;
+import com.example.springsecuritydemo.models.dto.UserCreateDto;
+import com.example.springsecuritydemo.models.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface UserService {
-    public User findUserByEmail(String email);
+    List<UserDto> findAllUser();
 
-    public List<User> findUserByFullName(String fullName);
+    User findUserByEmail(String email);
 
-    public User findUserByUsername(String username);
+    List<User> findUserByFullName(String fullName);
+
+    UserDto findUserByUsername(String username);
+
+    UserDto createUser(UserCreateDto createDto);
+
+    Boolean checkIfEmailExisted(String email);
+
+    Boolean checkIfUsernameExisted(String username);
 }

@@ -1,6 +1,9 @@
-package com.example.springsecuritydemo.auth.payload;
+package com.example.springsecuritydemo.models.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,10 +12,9 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class SignUpRequest {
+@AllArgsConstructor
+public class UserCreateDto {
     @NotBlank
     @Size(min = 5, max = 20)
     private String username;
@@ -23,11 +25,12 @@ public class SignUpRequest {
     private String email;
 
     @NotBlank
-    @Size(max = 40)
+    @Email
+    @Size(max = 20)
     private String password;
 
     @NotBlank
     private String fullName;
 
-    private Set<String> roles;
+    private Set<String> roleList;
 }

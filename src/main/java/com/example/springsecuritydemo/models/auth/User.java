@@ -40,11 +40,13 @@ public class User {
     private Set<Role> roles;
 
     public User(String userName,
+                String fullName,
                 String email,
                 String password) {
         this.username = userName;
         this.email = email;
         this.password = password;
+        this.fullName = fullName;
     }
 
 }

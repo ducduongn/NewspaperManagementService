@@ -13,6 +13,7 @@ import com.example.springsecuritydemo.models.auth.User;
 import com.example.springsecuritydemo.repository.RoleRepository;
 import com.example.springsecuritydemo.repository.UserRepository;
 import com.example.springsecuritydemo.service.impl.UserDetailsImpl;
+import com.example.springsecuritydemo.worker.RoleChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+
+    @Autowired
+    private RoleChecker roleChecker;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -69,44 +73,15 @@ public class AuthController {
 
         User user = new User(
                 signUpRequest.getUsername(),
+                signUpRequest.getFullName(),
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword())
         );
 
         Set<String> requestRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
 
-        if (requestRoles == null) {
-            Role role = roleRepository.findByRoleName(ERole.ROLE_JOURNALIST)
-                    .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
-            roles.add(role);
-        } else {
-            requestRoles.forEach(roleName -> {
-                switch (roleName) {
-                    case "admin":
-                        Role journalistRole = roleRepository.findByRoleName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
-                        roles.add(journalistRole);
-                        break;
-                    case "editor":
-                        Role editorRole = roleRepository.findByRoleName(ERole.ROLE_EDITOR)
-                                .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
-                        roles.add(editorRole);
-                        break;
-                    case "director":
-                        Role directorRole = roleRepository.findByRoleName(ERole.ROLE_DIRECTOR)
-                                .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
-                        roles.add(directorRole);
-                        break;
-                    default:
-                        Role readerRole = roleRepository.findByRoleName(ERole.ROLE_JOURNALIST)
-                                .orElseThrow(() -> new RuntimeException(RoleMessage.ROLE_NOT_FOUND));
-                        roles.add(readerRole);
-                        break;
-                }
-            });
-        }
-
+        Set<Role> roles = roleChecker.getRolesFromDto(requestRoles);
+        
         user.setRoles(roles);
         userRepository.save(user);
 

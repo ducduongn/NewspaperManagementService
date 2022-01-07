@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.utils.crawler;
+package com.example.springsecuritydemo.utils;
 
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.articles.Category;

@@ -58,8 +58,8 @@ public class ArticleController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_EDITOR' or " +
-            "hasRole('ROLE_ADMIN'))")
+    @PreAuthorize("hasRole('ROLE_EDITOR') or " +
+            "hasRole('ROLE_ADMIN')")
     @PutMapping(value = "/",  produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> updateArticleByUrl(@RequestParam(name = "url") String url,
@@ -71,4 +71,6 @@ public class ArticleController {
         }
         return ResponseEntity.ok(new MessageResponse("Update article fail!"));
     }
+
+
 }

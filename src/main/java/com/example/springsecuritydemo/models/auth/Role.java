@@ -1,5 +1,6 @@
 package com.example.springsecuritydemo.models.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class Role {
     @Column(name = "role_name")
     private ERole roleName;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
     private Set<User> users;
 
