@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.repository;
+package com.example.springsecuritydemo.redis.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
 

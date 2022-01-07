@@ -1,12 +1,13 @@
-package com.example.springsecuritydemo.repository;
+package com.example.springsecuritydemo.redis.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import com.example.springsecuritydemo.redis.repository.TopArticleRedisRepository;
 import org.springframework.data.redis.core.HashOperations;
 
 import javax.annotation.Resource;
 import java.util.Map;
 
-public class TopArticleRedisRepositoryImpl implements TopArticleRedisRepository{
+public class TopArticleRedisRepositoryImpl implements TopArticleRedisRepository {
     private final String hashReference = "Article";
 
     @Resource(name = "redisTemplate")
