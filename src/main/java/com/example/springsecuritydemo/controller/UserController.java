@@ -1,6 +1,6 @@
 package com.example.springsecuritydemo.controller;
 
-import com.example.springsecuritydemo.auth.payload.MessageResponse;
+import auth.payload.MessageResponse;
 import com.example.springsecuritydemo.models.dto.UserDto;
 import com.example.springsecuritydemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
 package com.example.springsecuritydemo.controller;
 
-import com.example.springsecuritydemo.auth.payload.MessageResponse;
+import auth.payload.MessageResponse;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.dto.ArticleUpdateDto;
-import com.example.springsecuritydemo.service.ArticleRedisService;
+import com.example.springsecuritydemo.redis.service.ArticleRedisService;
 import com.example.springsecuritydemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,4 +82,5 @@ public class ArticleController {
 
         return ResponseEntity.ok(new MessageResponse("Article is not found"));
     }
+
 }

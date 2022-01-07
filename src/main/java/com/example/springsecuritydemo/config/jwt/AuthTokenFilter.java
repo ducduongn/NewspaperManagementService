@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.auth.jwt;
+package com.example.springsecuritydemo.config.jwt;
 
 import com.example.springsecuritydemo.service.impl.UserDetailsServiceImpl;
 import org.slf4j.Logger;

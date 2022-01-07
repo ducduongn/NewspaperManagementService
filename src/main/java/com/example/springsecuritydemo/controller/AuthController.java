@@ -1,13 +1,11 @@
 package com.example.springsecuritydemo.controller;
 
-import com.example.springsecuritydemo.auth.jwt.JwtUtils;
-import com.example.springsecuritydemo.auth.payload.LoginRequest;
-import com.example.springsecuritydemo.auth.payload.SignUpRequest;
-import com.example.springsecuritydemo.auth.payload.JwtResponse;
-import com.example.springsecuritydemo.auth.payload.MessageResponse;
-import com.example.springsecuritydemo.constant.RoleMessage;
+import com.example.springsecuritydemo.config.jwt.JwtUtils;
+import auth.payload.LoginRequest;
+import auth.payload.SignUpRequest;
+import auth.payload.JwtResponse;
+import auth.payload.MessageResponse;
 import com.example.springsecuritydemo.constant.UserMessage;
-import com.example.springsecuritydemo.models.auth.ERole;
 import com.example.springsecuritydemo.models.auth.Role;
 import com.example.springsecuritydemo.models.auth.User;
 import com.example.springsecuritydemo.repository.RoleRepository;
@@ -27,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -81,7 +78,7 @@ public class AuthController {
         Set<String> requestRoles = signUpRequest.getRoles();
 
         Set<Role> roles = roleChecker.getRolesFromDto(requestRoles);
-        
+
         user.setRoles(roles);
         userRepository.save(user);
 
