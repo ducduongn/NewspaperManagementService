@@ -22,4 +22,6 @@ public interface UserService {
     Boolean checkIfEmailExisted(String email);
 
     Boolean checkIfUsernameExisted(String username);
+
+    User saveUser(User user);
 }

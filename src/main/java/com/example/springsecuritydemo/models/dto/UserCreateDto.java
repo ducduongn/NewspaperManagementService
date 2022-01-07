@@ -7,13 +7,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserCreateDto {
     @NotBlank
     @Size(min = 5, max = 20)
@@ -32,5 +32,16 @@ public class UserCreateDto {
     @NotBlank
     private String fullName;
 
+    @NotNull
     private Set<String> roleList;
+
+    public UserCreateDto(String username,
+                         String email,
+                         String password,
+                         String fullName) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+    }
 }
