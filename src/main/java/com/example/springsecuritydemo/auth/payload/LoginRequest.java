@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.auth.payload.request;
+package com.example.springsecuritydemo.auth.payload;
 
 import javax.validation.constraints.NotBlank;
 

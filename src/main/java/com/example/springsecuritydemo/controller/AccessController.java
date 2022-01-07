@@ -17,29 +17,29 @@ public class AccessController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('JOURNALIST') or " +
-            "hasRole('EDITOR') or " +
-            "hasRole('DIRECTOR') or " +
-            "hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_JOURNALIST') or " +
+            "hasRole('ROLE_EDITOR') or " +
+            "hasRole('_ROLE_DIRECTOR') or " +
+            "hasRole('ROLE_ADMIN')")
     public String userAcess() {
         return "This content is for user only";
     }
 
     @GetMapping("/upload-article")
-    @PreAuthorize("hasRole('JOURNALIST')")
+    @PreAuthorize("hasRole('ROLE_JOURNALIST')")
     public String uploadArticleAccess() {
         return "Journalist uploads here!";
     }
 
     @GetMapping("/approve-article")
-    @PreAuthorize("hasRole('EDITOR') or " +
+    @PreAuthorize("hasRole('ROLE_EDITOR') or " +
             "hasRole('DIRECTOR')")
     public String approveArticle() {
         return "Editor approve article here!";
     }
 
     @GetMapping("/user-management")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String manageUser() {
         return "Admin manage user here!";
     }

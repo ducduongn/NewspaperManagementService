@@ -1,12 +1,12 @@
 package com.example.springsecuritydemo.controller;
 
 import com.example.springsecuritydemo.auth.jwt.JwtUtils;
-import com.example.springsecuritydemo.auth.payload.request.LoginRequest;
-import com.example.springsecuritydemo.auth.payload.request.SignUpRequest;
-import com.example.springsecuritydemo.auth.payload.respond.JwtResponse;
-import com.example.springsecuritydemo.auth.payload.respond.MessageResponse;
-import com.example.springsecuritydemo.constant.auth.RoleMessage;
-import com.example.springsecuritydemo.constant.auth.UserMessage;
+import com.example.springsecuritydemo.auth.payload.LoginRequest;
+import com.example.springsecuritydemo.auth.payload.SignUpRequest;
+import com.example.springsecuritydemo.auth.payload.JwtResponse;
+import com.example.springsecuritydemo.auth.payload.MessageResponse;
+import com.example.springsecuritydemo.constant.RoleMessage;
+import com.example.springsecuritydemo.constant.UserMessage;
 import com.example.springsecuritydemo.models.auth.ERole;
 import com.example.springsecuritydemo.models.auth.Role;
 import com.example.springsecuritydemo.models.auth.User;

@@ -1,4 +1,4 @@
-package com.example.springsecuritydemo.auth.payload.respond;
+package com.example.springsecuritydemo.auth.payload;
 
 public class MessageResponse {
     private String message;

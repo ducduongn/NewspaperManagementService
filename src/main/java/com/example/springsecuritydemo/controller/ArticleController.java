@@ -1,6 +1,6 @@
 package com.example.springsecuritydemo.controller;
 
-import com.example.springsecuritydemo.auth.payload.respond.MessageResponse;
+import com.example.springsecuritydemo.auth.payload.MessageResponse;
 import com.example.springsecuritydemo.models.articles.Article;
 import com.example.springsecuritydemo.models.dto.ArticleUpdateDto;
 import com.example.springsecuritydemo.service.ArticleService;
@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author ducduongn
@@ -27,6 +26,10 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @PreAuthorize("hasRole('ROLE_JOURNALIST') or " +
+            "hasRole('ROLE_EDITOR') or " +
+            "hasRole('_ROLE_DIRECTOR') or " +
+            "hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllArticles() {
         List<Article> articleList = articleService.findAll();
@@ -34,6 +37,10 @@ public class ArticleController {
         return ResponseEntity.ok(articleList);
     }
 
+    @PreAuthorize("hasRole('ROLE_JOURNALIST') or " +
+            "hasRole('ROLE_EDITOR') or " +
+            "hasRole('_ROLE_DIRECTOR') or " +
+            "hasRole('ROLE_ADMIN')")
     @GetMapping("/get")
     public ResponseEntity<?> getArticleByUrl(@RequestParam String articleUrl) {
         Article article = articleService.findByUrl(articleUrl);
@@ -51,6 +58,8 @@ public class ArticleController {
                 HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_EDITOR' or " +
+            "hasRole('ROLE_ADMIN'))")
     @PutMapping(value = "/",  produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> updateArticleByUrl(@RequestParam(name = "url") String url,
@@ -62,5 +71,4 @@ public class ArticleController {
         }
         return ResponseEntity.ok(new MessageResponse("Update article fail!"));
     }
-
 }

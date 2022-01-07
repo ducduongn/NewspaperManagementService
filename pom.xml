@@ -122,6 +122,7 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
+            <version>2.3.6</version>
         </dependency>
 
         <!--Validation-->
