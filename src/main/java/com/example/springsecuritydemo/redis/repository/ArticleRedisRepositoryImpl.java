@@ -1,13 +1,14 @@
 package com.example.springsecuritydemo.redis.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
-import com.example.springsecuritydemo.redis.repository.TopArticleRedisRepository;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.Map;
 
-public class TopArticleRedisRepositoryImpl implements TopArticleRedisRepository {
+@Repository
+public class ArticleRedisRepositoryImpl implements ArticleRedisRepository {
     private final String hashReference = "Article";
 
     @Resource(name = "redisTemplate")
@@ -29,12 +30,17 @@ public class TopArticleRedisRepositoryImpl implements TopArticleRedisRepository 
     }
 
     @Override
-    public void deleteArticle(Long articleId) {
-        hashOperations.delete(hashReference, articleId);
+    public void deleteArticle(Long id) {
+        hashOperations.delete(hashReference, id);
     }
 
     @Override
     public Map<Long, Article> getAllArticles() {
         return hashOperations.entries(hashReference);
+    }
+
+    @Override
+    public void saveAllArticle(Map<Long, Article> map) {
+        hashOperations.putAll(hashReference, map);
     }
 }

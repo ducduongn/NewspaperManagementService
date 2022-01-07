@@ -1,10 +1,12 @@
 package com.example.springsecuritydemo.redis.repository;
 
 import com.example.springsecuritydemo.models.articles.Article;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
-public interface TopArticleRedisRepository {
+@Repository
+public interface ArticleRedisRepository {
     void saveArticle(Article article);
 
     Article findArticleById(Long id);
@@ -14,4 +16,6 @@ public interface TopArticleRedisRepository {
     void deleteArticle(Long articleId);
 
     Map<Long, Article> getAllArticles();
+
+    void saveAllArticle(Map<Long, Article> map);
 }

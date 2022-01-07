@@ -46,9 +46,15 @@ public class MQArticleWorker {
         article.setUrl(articleUrl);
 
         for (String categoryUrl : urlCategoryList) {
-            Category category = categoryRepository.findByUrl(categoryUrl)
-                    .orElse(new Category());
+            log.info("Cate url: " + categoryUrl);
+            Category category = new Category();
 
+            try {
+                category = categoryRepository.findByUrl(categoryUrl)
+                        .orElse(new Category());
+            } catch (Exception e) {
+                log.error("Duplicate category field");
+            }
 
             if (category.getUrl() != null) {
                 categories.add(category);

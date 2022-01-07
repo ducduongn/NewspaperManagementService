@@ -17,9 +17,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long>,
         JpaSpecificationExecutor<Article>{
     List<Article> findAll();
 
-    Optional<Article> findById(Long aLong);
-
     Optional<Article> findByUrl(String url);
+
+    Optional<Article> findById(Long id);
 
     Boolean existsByTitle(String title);
 
