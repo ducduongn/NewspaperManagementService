@@ -1,6 +1,22 @@
 version: "3.4"
 
 services:
+  mysql:
+    image: mysql:8.0.30
+    volumes:
+      - ./config/mysql:/etc/mysql/conf.d
+    #   - ~/volumes/jhipster/SecurityExample/mysql/:/var/lib/mysql/
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456aA@
+      - MYSQL_DATABASE=elcom_intern
+      - MYSQL_USER=duongnd21
+      - MYSQL_PASSWORD=123456aA@
+    # If you want to expose these ports outside your dev PC,
+    # remove the "127.0.0.1:" prefix
+    ports:
+      - 3306:3306
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
   rabbitmq:
     image: "rabbitmq:management"
     ports:
@@ -20,7 +36,7 @@ services:
 
   elasticsearch:
     container_name: es-container
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.1
     environment:
       - xpack.security.enabled=false
       - "discovery.type=single-node"
@@ -31,7 +47,7 @@ services:
 
   kibana:
     container_name: kb-container
-    image: docker.elastic.co/kibana/kibana:7.16.2
+    image: docker.elastic.co/kibana/kibana:7.7.1
     environment:
       - ELASTICSEARCH_HOSTS=http://es-container:9200
     networks:
